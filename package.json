@@ -1,0 +1,23 @@
+{
+  "name": "yojanafind-crawler",
+  "version": "1.0.0",
+  "description": "AI-powered government scheme crawler using Firecrawl + Claude",
+  "type": "module",
+  "main": "crawler.js",
+  "scripts": {
+    "start": "node crawler.js",
+    "dev": "node --watch crawler.js",
+    "crawl-once": "node -e \"import('./crawler.js').then(m => m.runCrawlPipeline())\""
+  },
+  "dependencies": {
+    "@mendable/firecrawl-js": "^1.4.0",
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@supabase/supabase-js": "^2.43.0",
+    "node-cron": "^3.0.3",
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

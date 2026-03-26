@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YojanaFind — Find Government Schemes | सरकारी योजना खोजें</title>
+<meta name="description" content="Find all Indian government schemes you are eligible for. Free, no login, instant results in English and Hindi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<!-- ADSENSE: Replace with your AdSense script tag here -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="main-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <a href="landing.html" class="brand-logo">
+        <span class="brand-flag">🇮🇳</span>
+        <span class="brand-name">Yojana<em>Find</em></span>
+      </a>
+      <div class="brand-tagline" id="tagline-text">India's Free Government Scheme Finder</div>
+    </div>
+    <div class="header-meta">
+      <div class="header-stats">
+        <span class="hstat">📋 <strong>150+</strong> Schemes</span>
+        <span class="hstat">🗺️ <strong>36</strong> States</span>
+        <span class="hstat">🔒 <strong>No Login</strong></span>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="btn-hi" onclick="setLang('hi')">हि</button>
+      </div>
+    </div>
+  </div>
+  <div class="tricolor-bar"></div>
+</header>
+
+<!-- AD SLOT 1 (Top Banner) -->
+<div class="ad-slot ad-top">
+  <!-- ADSENSE: Replace with your ad unit code -->
+  <div class="ad-placeholder">📢 Advertisement · 728×90</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main>
+
+<!-- FILTER FORM -->
+<section class="filter-section" id="filter-section">
+  <div class="filter-container">
+    <div class="filter-heading">
+      <h1 class="filter-title" id="filter-title">Find Schemes You Qualify For</h1>
+      <p class="filter-sub" id="filter-sub">Fill in your profile to instantly see all eligible central & state government schemes with application guides.</p>
+    </div>
+
+    <div class="filter-form" id="filter-form">
+      <!-- Row 1 -->
+      <div class="form-group">
+        <label id="lbl-state">📍 State / UT</label>
+        <select id="f-state">
+          <option value="">All States</option>
+          <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+          <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
+          <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
+          <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
+          <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
+          <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+          <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
+          <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
+          <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
+          <option>West Bengal</option>
+          <optgroup label="Union Territories">
+            <option>Andaman & Nicobar</option><option>Chandigarh</option>
+            <option>Dadra & Nagar Haveli</option><option>Daman & Diu</option>
+            <option>Delhi</option><option>Jammu & Kashmir</option>
+            <option>Ladakh</option><option>Lakshadweep</option><option>Puducherry</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-age">🎂 Age</label>
+        <input type="number" id="f-age" placeholder="e.g. 24" min="0" max="120">
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-gender">👤 Gender</label>
+        <select id="f-gender">
+          <option value="">Any Gender</option>
+          <option value="male">Male / पुरुष</option>
+          <option value="female">Female / महिला</option>
+          <option value="other">Other / अन्य</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-category">🏷️ Category</label>
+        <select id="f-category">
+          <option value="">All Categories</option>
+          <option value="general">General</option>
+          <option value="obc">OBC</option>
+          <option value="sc">SC (Scheduled Caste)</option>
+          <option value="st">ST (Scheduled Tribe)</option>
+          <option value="ews">EWS</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-income">💰 Annual Family Income</label>
+        <select id="f-income">
+          <option value="">Any Income</option>
+          <option value="0">Below ₹1 Lakh (BPL)</option>
+          <option value="1">₹1 – ₹2.5 Lakh</option>
+          <option value="2">₹2.5 – ₹5 Lakh</option>
+          <option value="3">₹5 – ₹8 Lakh</option>
+          <option value="4">₹8 – ₹12 Lakh</option>
+          <option value="5">Above ₹12 Lakh</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-employment">💼 Employment Status</label>
+        <select id="f-employment">
+          <option value="">Any Status</option>
+          <option value="student">Student</option>
+          <option value="unemployed">Unemployed</option>
+          <option value="farmer">Farmer / किसान</option>
+          <option value="self-employed">Self-Employed</option>
+          <option value="salaried-private">Salaried (Private)</option>
+          <option value="govt">Government Employee</option>
+          <option value="daily-wage">Daily Wage Worker</option>
+          <option value="artisan">Artisan / Craftsman</option>
+        </select>
+      </div>
+
+      <!-- Life Situations (full row) -->
+      <div class="form-group form-group-full">
+        <label id="lbl-situation">🌟 Life Situation <span style="font-weight:400;color:#888">(Select all that apply)</span></label>
+        <div class="situation-pills" id="situation-pills">
+          <label class="pill"><input type="checkbox" value="pregnant"> 🤰 Pregnant / New Mother</label>
+          <label class="pill"><input type="checkbox" value="disabled"> ♿ Differently Abled</label>
+          <label class="pill"><input type="checkbox" value="bpl"> 🏠 BPL Card Holder</label>
+          <label class="pill"><input type="checkbox" value="minority"> ☪️ Minority Community</label>
+          <label class="pill"><input type="checkbox" value="widow"> 🙏 Widow / Single Parent</label>
+          <label class="pill"><input type="checkbox" value="rural"> 🌾 Rural / Village Area</label>
+          <label class="pill"><input type="checkbox" value="senior"> 👴 Senior Citizen (60+)</label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="form-group form-group-full form-submit-row">
+        <button class="find-btn" id="find-btn" onclick="findSchemes()">
+          <span id="find-btn-text">🔍 Find My Schemes</span>
+          <span class="btn-loader" id="btn-loader" style="display:none">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </span>
+        </button>
+        <button class="reset-btn" onclick="resetForm()" id="reset-btn">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AD SLOT 2 (Mid Banner) -->
+<div class="ad-slot ad-mid" id="ad-mid" style="display:none">
+  <!-- ADSENSE: Replace with your ad unit code -->
+  <div class="ad-placeholder">📢 Advertisement · 336×280</div>
+</div>
+
+<!-- RESULTS SECTION -->
+<section class="results-section" id="results-section" style="display:none">
+  <div class="results-container">
+    <div class="results-header">
+      <div class="results-count" id="results-count">0 schemes found</div>
+      <div class="results-actions">
+        <button class="share-btn" onclick="shareResults()">📤 Share Results</button>
+      </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="cat-tabs" id="cat-tabs">
+      <button class="cat-tab active" data-cat="all" onclick="filterByCategory('all')" id="tab-all">All</button>
+      <button class="cat-tab" data-cat="education" onclick="filterByCategory('education')">🎓 Education</button>
+      <button class="cat-tab" data-cat="agriculture" onclick="filterByCategory('agriculture')">🌾 Agriculture</button>
+      <button class="cat-tab" data-cat="housing" onclick="filterByCategory('housing')">🏠 Housing</button>
+      <button class="cat-tab" data-cat="women" onclick="filterByCategory('women')">👩 Women</button>
+      <button class="cat-tab" data-cat="employment" onclick="filterByCategory('employment')">💼 Employment</button>
+      <button class="cat-tab" data-cat="health" onclick="filterByCategory('health')">🏥 Health</button>
+      <button class="cat-tab" data-cat="social" onclick="filterByCategory('social')">👴 Social Security</button>
+      <button class="cat-tab" data-cat="business" onclick="filterByCategory('business')">🏢 Business</button>
+    </div>
+
+    <!-- Scheme Cards Grid -->
+    <div class="schemes-grid" id="schemes-grid"></div>
+
+    <!-- No Results -->
+    <div class="no-results" id="no-results" style="display:none">
+      <div class="no-results-icon">🔍</div>
+      <h3 id="no-results-title">No schemes found for your profile</h3>
+      <p id="no-results-sub">Try selecting a different state or removing some filters. Many central schemes apply regardless of state.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AD SLOT 3 (Bottom Banner) -->
+<div class="ad-slot ad-bottom" id="ad-bottom" style="display:none">
+  <!-- ADSENSE: Replace with your ad unit code -->
+  <div class="ad-placeholder">📢 Advertisement · 728×90</div>
+</div>
+
+<!-- SUGGEST A SCHEME -->
+<section class="suggest-section" id="suggest-section" style="display:none">
+  <div class="suggest-container">
+    <h3 id="suggest-title">💡 Know a scheme we missed?</h3>
+    <p id="suggest-sub">Help us improve YojanaFind for all Indians</p>
+    <div class="suggest-form">
+      <input type="text" id="suggest-input" placeholder="Describe the scheme or paste the official link...">
+      <button onclick="submitSuggestion()" id="suggest-btn">Submit</button>
+    </div>
+    <div class="suggest-thanks" id="suggest-thanks" style="display:none">✅ Thank you! We'll review and add it soon.</div>
+  </div>
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>YojanaFind</strong> — Independent information platform.
+      Always verify on official government websites before applying.
+    </div>
+    <div class="footer-links">
+      <a href="https://india.gov.in" target="_blank">india.gov.in</a>
+      <a href="https://myscheme.gov.in" target="_blank">myscheme.gov.in</a>
+      <a href="https://pib.gov.in" target="_blank">pib.gov.in</a>
+    </div>
+    <div class="footer-copy">© 2026 YojanaFind · Free for all Indians 🇮🇳</div>
+  </div>
+</footer>
+
+<script src="schemes-data.js"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
