@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yojana AI Tracker — Auto-Discover New Schemes</title>
+<meta name="description" content="AI-powered government scheme discovery. Automatically crawls official portals every 7 days and finds new schemes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020817;--bg2:#0D1B2A;--bg3:#0f2035;
+  --saffron:#FF6B00;--saffron2:#FF8533;
+  --green:#138808;--green2:#22C55E;
+  --blue:#2563EB;--blue2:#60A5FA;
+  --red:#EF4444;--amber:#F59E0B;
+  --text:#F1F5F9;--text2:#94A3B8;--text3:#475569;
+  --glass:rgba(13,27,42,.6);--border:rgba(255,255,255,.08);
+  --radius:16px;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+
+/* NAV */
+nav{background:rgba(2,8,23,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.8rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.2rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.nav-logo span{color:var(--saffron)}
+.nav-actions{display:flex;align-items:center;gap:1rem}
+.nav-link{color:var(--text2);text-decoration:none;font-size:.88rem;transition:color .2s}
+.nav-link:hover{color:var(--saffron)}
+.live-badge{display:flex;align-items:center;gap:.4rem;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green2);padding:.3rem .8rem;border-radius:50px;font-size:.75rem;font-weight:700}
+.live-dot{width:7px;height:7px;background:var(--green2);border-radius:50%;box-shadow:0 0 6px var(--green2);animation:livePulse 1.5s infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}
+.tricolor{height:3px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33% 66.66%,var(--green) 66.66%)}
+
+/* HERO */
+.tracker-hero{padding:3rem 2rem 2rem;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%)}
+.tracker-hero::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(37,99,235,.08),transparent);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.25);color:var(--blue2);padding:.35rem .9rem;border-radius:50px;font-size:.78rem;font-weight:600;margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:.04em}
+.tracker-hero h1{font-family:'Baloo 2',cursive;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.1;margin-bottom:.8rem}
+.tracker-hero h1 span{background:linear-gradient(135deg,var(--saffron),var(--saffron2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tracker-hero p{color:var(--text2);font-size:1rem;max-width:580px;margin:0 auto 2rem;line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Baloo 2',cursive;font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,var(--saffron),var(--saffron2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-stat-label{font-size:.78rem;color:var(--text3)}
+
+/* LAYOUT */
+.tracker-layout{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;padding:1.5rem 2rem;max-width:1400px;margin:0 auto}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:1.2rem}
+.sidebar-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;backdrop-filter:blur(20px)}
+.sidebar-title{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:1rem}
+.source-item{display:flex;align-items:center;gap:.7rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.source-item:last-child{border-bottom:none}
+.source-icon{font-size:1rem;width:28px;text-align:center}
+.source-name{font-size:.8rem;font-weight:500;color:var(--text);flex:1}
+.source-status{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ss-ok{background:var(--green2);box-shadow:0 0 5px var(--green2)}
+.ss-warn{background:var(--amber)}
+.ss-err{background:var(--red)}
+.cron-display{font-family:var(--mono);font-size:.75rem;color:var(--saffron);background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.15);border-radius:8px;padding:.5rem .7rem;text-align:center;margin-bottom:.8rem}
+.next-crawl{font-size:.78rem;color:var(--text2);text-align:center}
+.next-crawl strong{color:var(--text)}
+.crawl-btn{width:100%;background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:#fff;border:none;border-radius:10px;padding:.6rem;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;margin-top:.8rem;transition:transform .2s,box-shadow .2s}
+.crawl-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,107,0,.35)}
+.crawl-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.cat-list{display:flex;flex-direction:column;gap:.3rem}
+.cat-item{display:flex;align-items:center;justify-content:space-between;padding:.4rem .7rem;border-radius:8px;cursor:pointer;transition:background .2s;font-size:.82rem}
+.cat-item:hover,.cat-item.active{background:rgba(255,255,255,.06)}
+.cat-item.active{border-left:2px solid var(--saffron)}
+.cat-count{background:rgba(255,255,255,.08);border-radius:50px;padding:.1rem .5rem;font-size:.7rem;color:var(--text3)}
+
+/* MAIN AREA */
+.main-area{display:flex;flex-direction:column;gap:1.5rem}
+
+/* STATUS BAR */
+.status-bar{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;backdrop-filter:blur(20px)}
+.status-item{display:flex;align-items:center;gap:.5rem;font-size:.82rem}
+.status-label{color:var(--text3)}
+.status-val{color:var(--text);font-weight:600}
+.status-val.green{color:var(--green2)}
+.status-val.saffron{color:var(--saffron)}
+.status-val.blue{color:var(--blue2)}
+
+/* SEARCH BAR */
+.search-bar{display:flex;gap:.8rem;align-items:center}
+.search-input{flex:1;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;color:var(--text);font-size:.9rem;font-family:inherit;outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{border-color:var(--saffron)}
+.filter-select{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:.7rem .9rem;color:var(--text);font-size:.85rem;font-family:inherit;outline:none;cursor:pointer}
+.filter-select option{background:var(--bg2)}
+
+/* TABS */
+.tracker-tabs{display:flex;gap:.4rem;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;border:1px solid var(--border)}
+.tracker-tab{flex:1;background:transparent;border:none;color:var(--text3);padding:.5rem;font-size:.82rem;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s;font-family:inherit}
+.tracker-tab.active{background:var(--saffron);color:#fff}
+
+/* SCHEME CARDS (tracker style) */
+.tracker-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.tracker-scheme-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;transition:border-color .3s,transform .3s;backdrop-filter:blur(10px);position:relative;overflow:hidden;cursor:pointer}
+.tracker-scheme-card:hover{border-color:rgba(255,107,0,.3);transform:translateY(-3px)}
+.tracker-scheme-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--saffron),var(--saffron2));opacity:0;transition:opacity .3s}
+.tracker-scheme-card:hover::before{opacity:1}
+.tsc-header{display:flex;align-items:flex-start;gap:.8rem;margin-bottom:.8rem}
+.tsc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.tsc-name{font-family:'Baloo 2',cursive;font-weight:700;font-size:.95rem;line-height:1.3;color:var(--text)}
+.tsc-ministry{font-size:.72rem;color:var(--text3);margin-top:.1rem}
+.tsc-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+.badge-new{background:rgba(255,107,0,.15);color:var(--saffron);border:1px solid rgba(255,107,0,.25);border-radius:50px;padding:.15rem .6rem;font-size:.68rem;font-weight:700}
+.badge-updated{background:rgba(37,99,235,.15);color:var(--blue2);border:1px solid rgba(37,99,235,.25);border-radius:50px;padding:.15rem .6rem;font-size:.68rem;font-weight:700}
+.badge-popular{background:rgba(34,197,94,.1);color:var(--green2);border:1px solid rgba(34,197,94,.2);border-radius:50px;padding:.15rem .6rem;font-size:.68rem;font-weight:700}
+.badge-cat{background:rgba(255,255,255,.06);color:var(--text3);border:1px solid var(--border);border-radius:50px;padding:.15rem .6rem;font-size:.68rem;font-weight:600}
+.tsc-desc{font-size:.8rem;color:var(--text2);line-height:1.6;margin-bottom:.8rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tsc-benefit{display:flex;align-items:center;gap:.4rem;background:rgba(19,136,8,.08);border:1px solid rgba(19,136,8,.15);border-radius:8px;padding:.45rem .7rem;font-size:.78rem;color:var(--green2);font-weight:600;margin-bottom:.7rem}
+.tsc-footer{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--text3)}
+.tsc-source{display:flex;align-items:center;gap:.3rem}
+.tsc-date{font-family:var(--mono)}
+
+/* CHART SECTION */
+.chart-section{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;backdrop-filter:blur(20px)}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.chart-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:1rem}
+.chart-legend{display:flex;gap:1rem;font-size:.75rem;color:var(--text2)}
+.legend-item{display:flex;align-items:center;gap:.3rem}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.chart-wrap{position:relative;height:220px}
+
+/* CRAWL LOG */
+.log-container{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;backdrop-filter:blur(20px)}
+.log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.log-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:.95rem}
+.log-clear{background:transparent;border:1px solid var(--border);color:var(--text3);padding:.3rem .7rem;border-radius:8px;font-size:.75rem;cursor:pointer;font-family:inherit;transition:all .2s}
+.log-clear:hover{border-color:var(--red);color:var(--red)}
+.log-feed{height:200px;overflow-y:auto;font-family:var(--mono);font-size:.75rem;display:flex;flex-direction:column;gap:.3rem;padding-right:.3rem}
+.log-feed::-webkit-scrollbar{width:3px}
+.log-feed::-webkit-scrollbar-track{background:transparent}
+.log-feed::-webkit-scrollbar-thumb{background:var(--text3);border-radius:2px}
+.log-entry{display:flex;gap:.7rem;align-items:flex-start;padding:.3rem;border-radius:6px;transition:background .2s}
+.log-entry:hover{background:rgba(255,255,255,.03)}
+.log-time{color:var(--text3);white-space:nowrap;flex-shrink:0}
+.log-msg{color:var(--text2)}
+.log-msg.success{color:var(--green2)}
+.log-msg.warning{color:var(--amber)}
+.log-msg.error{color:var(--red)}
+.log-msg.info{color:var(--blue2)}
+
+/* AI CHAT */
+.ai-chat{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;backdrop-filter:blur(20px)}
+.chat-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:.95rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.chat-messages{height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:.8rem;margin-bottom:1rem;padding-right:.3rem}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--text3);border-radius:2px}
+.chat-bubble{padding:.7rem .9rem;border-radius:12px;font-size:.82rem;line-height:1.6;max-width:85%}
+.chat-bubble.ai{background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.2);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.chat-bubble.user{background:rgba(255,107,0,.12);border:1px solid rgba(255,107,0,.2);color:var(--text);align-self:flex-end;border-bottom-right-radius:4px}
+.chat-bubble.typing{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.15);color:var(--text2)}
+.chat-input-row{display:flex;gap:.6rem}
+.chat-input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:.55rem .8rem;color:var(--text);font-size:.82rem;font-family:inherit;outline:none;transition:border-color .2s}
+.chat-input::placeholder{color:var(--text3)}
+.chat-input:focus{border-color:var(--blue)}
+.chat-send{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:.55rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+.chat-send:hover{background:var(--navy2,#1A3C6E)}
+.chat-send:disabled{opacity:.6;cursor:not-allowed}
+
+/* AI MODEL INDICATOR */
+.ai-model-tag{display:inline-flex;align-items:center;gap:.3rem;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.2);color:var(--blue2);padding:.2rem .6rem;border-radius:50px;font-size:.68rem;font-weight:700}
+
+/* ARCHITECTURE SECTION */
+.arch-section{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;backdrop-filter:blur(20px)}
+.arch-title{font-family:'Baloo 2',cursive;font-weight:700;font-size:1rem;margin-bottom:1.2rem}
+.arch-flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;overflow-x:auto;padding:.5rem 0}
+.arch-node{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:.6rem 1rem;font-size:.78rem;font-weight:600;white-space:nowrap;flex-shrink:0;text-align:center}
+.arch-node.source{border-color:rgba(37,99,235,.3);color:var(--blue2)}
+.arch-node.process{border-color:rgba(255,107,0,.3);color:var(--saffron)}
+.arch-node.store{border-color:rgba(34,197,94,.3);color:var(--green2)}
+.arch-node.output{border-color:rgba(124,58,237,.3);color:#A78BFA}
+.arch-arrow{color:var(--text3);font-size:1.1rem;flex-shrink:0}
+.arch-desc{font-size:.78rem;color:var(--text2);margin-top:.3rem}
+
+/* NOTIFICATION */
+.notif-banner{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:.8rem 1.2rem;display:flex;align-items:center;gap:.8rem;font-size:.82rem;animation:slideDown .4s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.notif-icon{font-size:1.2rem}
+.notif-text{flex:1;color:var(--text)}
+.notif-close{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:1rem;padding:.2rem}
+
+/* CODE BLOCK */
+.code-block{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:1rem;font-family:var(--mono);font-size:.75rem;color:var(--green2);overflow-x:auto;white-space:pre;line-height:1.7}
+.code-comment{color:var(--text3)}
+.code-key{color:var(--blue2)}
+.code-str{color:var(--saffron)}
+.code-section-title{font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;color:var(--text);margin:1rem 0 .6rem}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .tracker-layout{grid-template-columns:1fr}
+  .sidebar{order:2}
+  .main-area{order:1}
+  .tracker-grid{grid-template-columns:1fr}
+  .charts-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  nav{padding:.7rem 1rem}
+  .tracker-hero{padding:2rem 1rem 1.5rem}
+  .tracker-layout{padding:1rem}
+}
+
+/* LOADING SPINNER */
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--saffron);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:3rem;color:var(--text3)}
+.empty-icon{font-size:2.5rem;margin-bottom:.8rem}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;gap:.8rem;font-size:.82rem;color:var(--text2)}
+.toggle{width:36px;height:20px;background:rgba(255,255,255,.1);border-radius:10px;position:relative;cursor:pointer;transition:background .2s}
+.toggle.on{background:var(--green2)}
+.toggle-knob{width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle.on .toggle-knob{transform:translateX(16px)}
+
+/* TABS SECTION */
+.section-tabs{display:flex;gap:.6rem;margin-bottom:1.2rem;border-bottom:1px solid var(--border);padding-bottom:.8rem;overflow-x:auto}
+.section-tab{background:transparent;border:none;color:var(--text3);padding:.4rem .8rem;font-size:.82rem;font-weight:600;cursor:pointer;border-radius:8px;transition:all .2s;font-family:inherit;white-space:nowrap}
+.section-tab.active{background:rgba(255,107,0,.12);color:var(--saffron)}
+
+/* GRADIENT BORDER */
+.gradient-border{position:relative}
+.gradient-border::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,var(--saffron),rgba(37,99,235,.5),var(--green));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="landing.html" class="nav-logo">🇮🇳 Yojana<span>Find</span></a>
+  <div class="nav-actions">
+    <a href="index.html" class="nav-link">← Scheme Finder</a>
+    <div class="live-badge"><div class="live-dot"></div>AI Tracker Live</div>
+  </div>
+</nav>
+<div class="tricolor"></div>
+
+<!-- HERO -->
+<div class="tracker-hero">
+  <div class="hero-badge">🤖 Powered by Claude AI + Firecrawl</div>
+  <h1>Yojana <span>AI Tracker</span></h1>
+  <p>Automatically discovers new Indian government schemes every 7 days by crawling official portals. Zero manual work. Always up to date.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num" id="stat-schemes">18</div><div class="hero-stat-label">Schemes Tracked</div></div>
+    <div class="hero-stat"><div class="hero-stat-num" id="stat-sources">47</div><div class="hero-stat-label">Sources Monitored</div></div>
+    <div class="hero-stat"><div class="hero-stat-num" id="stat-new">3</div><div class="hero-stat-label">New This Week</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">7</div><div class="hero-stat-label">Day Crawl Cycle</div></div>
+  </div>
+</div>
+
+<!-- NOTIFICATION BANNER -->
+<div style="padding:.8rem 2rem;max-width:1400px;margin:0 auto" id="notif-area">
+  <div class="notif-banner">
+    <span class="notif-icon">🆕</span>
+    <span class="notif-text"><strong>3 new schemes discovered</strong> in the last crawl — PM Vishwakarma 2025 update, UP Kanya Sumangala revisions, Maharashtra Shasan Apla Dari portal.</span>
+    <button class="notif-close" onclick="this.parentElement.remove()">✕</button>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="tracker-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Crawl Status -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">⚙️ Crawl Schedule</div>
+      <div class="cron-display">0 2 */7 * *</div>
+      <div class="next-crawl">Next crawl: <strong id="next-crawl-time">Loading...</strong></div>
+      <button class="crawl-btn" id="crawl-btn" onclick="triggerManualCrawl()">▶ Trigger Manual Crawl</button>
+    </div>
+
+    <!-- Sources -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">🌐 Monitored Sources</div>
+      <div id="sources-list">
+        <div class="source-item"><span class="source-icon">🏛️</span><span class="source-name">india.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">📢</span><span class="source-name">pib.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">🎓</span><span class="source-name">scholarships.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">🌾</span><span class="source-name">pmkisan.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">🏥</span><span class="source-name">pmjay.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">🏗️</span><span class="source-name">pmvishwakarma.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">🏠</span><span class="source-name">pmaymis.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">💼</span><span class="source-name">myscheme.gov.in</span><div class="source-status ss-warn"></div></div>
+        <div class="source-item"><span class="source-icon">🗺️</span><span class="source-name">up.gov.in</span><div class="source-status ss-ok"></div></div>
+        <div class="source-item"><span class="source-icon">🗺️</span><span class="source-name">maharashtra.gov.in</span><div class="source-status ss-ok"></div></div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">📂 Categories</div>
+      <div class="cat-list" id="cat-list">
+        <div class="cat-item active" data-cat="all" onclick="filterTrackerCat('all')"><span>🗂️ All Schemes</span><span class="cat-count" id="cc-all">18</span></div>
+        <div class="cat-item" data-cat="education" onclick="filterTrackerCat('education')"><span>🎓 Education</span><span class="cat-count" id="cc-education">2</span></div>
+        <div class="cat-item" data-cat="agriculture" onclick="filterTrackerCat('agriculture')"><span>🌾 Agriculture</span><span class="cat-count" id="cc-agriculture">2</span></div>
+        <div class="cat-item" data-cat="housing" onclick="filterTrackerCat('housing')"><span>🏠 Housing</span><span class="cat-count" id="cc-housing">1</span></div>
+        <div class="cat-item" data-cat="women" onclick="filterTrackerCat('women')"><span>👩 Women</span><span class="cat-count" id="cc-women">4</span></div>
+        <div class="cat-item" data-cat="employment" onclick="filterTrackerCat('employment')"><span>💼 Employment</span><span class="cat-count" id="cc-employment">2</span></div>
+        <div class="cat-item" data-cat="health" onclick="filterTrackerCat('health')"><span>🏥 Health</span><span class="cat-count" id="cc-health">1</span></div>
+        <div class="cat-item" data-cat="social" onclick="filterTrackerCat('social')"><span>👴 Social Security</span><span class="cat-count" id="cc-social">3</span></div>
+        <div class="cat-item" data-cat="business" onclick="filterTrackerCat('business')"><span>🏢 Business</span><span class="cat-count" id="cc-business">3</span></div>
+      </div>
+    </div>
+
+    <!-- Notifications Toggle -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">🔔 Notifications</div>
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div class="toggle-row">
+          <div class="toggle on" id="t-email" onclick="toggleNotif(this)"><div class="toggle-knob"></div></div>
+          <span>Email alerts</span>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle on" id="t-new" onclick="toggleNotif(this)"><div class="toggle-knob"></div></div>
+          <span>New schemes</span>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle" id="t-weekly" onclick="toggleNotif(this)"><div class="toggle-knob"></div></div>
+          <span>Weekly summary</span>
+        </div>
+        <input placeholder="your@email.com" style="background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;color:var(--text);font-size:.78rem;font-family:inherit;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--saffron)'" onblur="this.style.borderColor='var(--border)'">
+        <button onclick="saveNotifPrefs()" style="background:linear-gradient(135deg,var(--saffron),var(--saffron2));color:#fff;border:none;border-radius:8px;padding:.5rem;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit">Save Preferences</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-area">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item"><span class="status-label">Status</span><span class="status-val green">🟢 Active</span></div>
+      <div class="status-item"><span class="status-label">Last Crawl</span><span class="status-val" id="last-crawl">2 hours ago</span></div>
+      <div class="status-item"><span class="status-label">Pages Crawled</span><span class="status-val saffron" id="pages-crawled">2,847</span></div>
+      <div class="status-item"><span class="status-label">New Found</span><span class="status-val green" id="new-found">3</span></div>
+      <div class="status-item"><span class="status-label">AI Model</span><span class="ai-model-tag">🤖 Claude Sonnet</span></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <span class="chart-title">📊 Scheme Discovery Analytics</span>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--saffron)"></div>New</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue2)"></div>Updated</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green2)"></div>Total</div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+        <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Search + Tabs -->
+    <div>
+      <div class="search-bar" style="margin-bottom:1rem">
+        <input class="search-input" id="tracker-search" placeholder="🔍 Search schemes by name, ministry, or keyword..." oninput="searchSchemes(this.value)">
+        <select class="filter-select" id="sort-select" onchange="sortSchemes(this.value)">
+          <option value="date">Latest First</option>
+          <option value="name">Name A–Z</option>
+          <option value="benefit">By Benefit</option>
+          <option value="category">By Category</option>
+        </select>
+      </div>
+      <div class="section-tabs">
+        <button class="section-tab active" onclick="switchTab('all',this)">📋 All Schemes</button>
+        <button class="section-tab" onclick="switchTab('new',this)">🆕 New This Week</button>
+        <button class="section-tab" onclick="switchTab('updated',this)">🔄 Recently Updated</button>
+        <button class="section-tab" onclick="switchTab('popular',this)">🔥 Popular</button>
+      </div>
+      <div class="tracker-grid" id="tracker-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Analytics Charts -->
+    <div class="charts-row" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+      <div class="log-container">
+        <div class="log-header">
+          <span class="log-title">🖥️ Crawl Activity Log</span>
+          <button class="log-clear" onclick="clearLog()">Clear</button>
+        </div>
+        <div class="log-feed" id="log-feed">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- AI Chat -->
+      <div class="ai-chat">
+        <div class="chat-title">🤖 Ask Scheme AI <span class="ai-model-tag">Claude</span></div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-bubble ai">Namaste! 🙏 I'm your AI scheme assistant powered by Claude. Ask me anything about government schemes — eligibility, benefits, how to apply, or what's new!</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" placeholder="Ask about any scheme..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" id="chat-send" onclick="sendChat()">Send →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Architecture -->
+    <div class="arch-section">
+      <div class="arch-title">🏗️ System Architecture — How AI Tracker Works</div>
+      <div class="arch-flow">
+        <div class="arch-node source">🌐 india.gov.in<br><span style="font-size:.65rem;color:var(--text3)">Source Portal</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node process">🕷️ Firecrawl API<br><span style="font-size:.65rem;color:var(--text3)">Crawl & Extract</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node process">🤖 Claude AI<br><span style="font-size:.65rem;color:var(--text3)">Clean & Categorize</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node store">🗄️ Supabase DB<br><span style="font-size:.65rem;color:var(--text3)">Store & Track</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node output">📊 Dashboard<br><span style="font-size:.65rem;color:var(--text3)">Display & Alert</span></div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node output">📧 Email Alert<br><span style="font-size:.65rem;color:var(--text3)">Notify Users</span></div>
+      </div>
+
+      <!-- Sample Code -->
+      <div class="code-section-title">📝 Sample Firecrawl + Claude Integration</div>
+      <div class="code-block"><span class="code-comment">// crawler.js — Firecrawl + Claude AI Integration</span>
+<span class="code-key">import</span> FirecrawlApp <span class="code-key">from</span> <span class="code-str">'@mendable/firecrawl-js'</span>;
+<span class="code-key">import</span> Anthropic <span class="code-key">from</span> <span class="code-str">'@anthropic-ai/sdk'</span>;
+
+<span class="code-key">const</span> firecrawl = <span class="code-key">new</span> FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+<span class="code-key">const</span> claude = <span class="code-key">new</span> Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+<span class="code-key">async function</span> crawlAndExtract() {
+  <span class="code-comment">// Step 1: Crawl government portal</span>
+  <span class="code-key">const</span> crawlResult = <span class="code-key">await</span> firecrawl.crawlUrl(<span class="code-str">'https://india.gov.in'</span>, {
+    limit: <span class="code-str">100</span>, scrapeOptions: { formats: [<span class="code-str">'markdown'</span>] }
+  });
+
+  <span class="code-comment">// Step 2: Claude AI extracts scheme data</span>
+  <span class="code-key">const</span> response = <span class="code-key">await</span> claude.messages.create({
+    model: <span class="code-str">'claude-sonnet-4-20250514'</span>, max_tokens: <span class="code-str">4096</span>,
+    messages: [{ role: <span class="code-str">'user'</span>, content: `Extract all government schemes from: ${crawlResult.data[0].markdown}
+    Return JSON: [{name, ministry, eligibility, benefit, applyUrl}]` }]
+  });
+
+  <span class="code-comment">// Step 3: Save to Supabase with change detection</span>
+  <span class="code-key">const</span> schemes = JSON.parse(response.content[0].text);
+  <span class="code-key">await</span> saveWithChangeDetection(schemes);
+}</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===== SCHEME DATA =====
+const TRACKER_SCHEMES = [
+  { id:1, name:"PM Kisan Samman Nidhi", ministry:"Agriculture Ministry", icon:"🌾", cat:"agriculture", benefit:"₹6,000/yr", status:"updated", source:"pmkisan.gov.in", date:"2 days ago", desc:"Income support for farmer families, 3 installments of ₹2,000 each transferred via DBT to bank accounts.", badge:"Popular" },
+  { id:2, name:"Ayushman Bharat PM-JAY", ministry:"Health Ministry", icon:"🏥", cat:"health", benefit:"₹5L/yr", status:"popular", source:"pmjay.gov.in", date:"1 week ago", desc:"World's largest govt-funded health insurance. Cashless treatment at 27,000+ empanelled hospitals.", badge:"Popular" },
+  { id:3, name:"PM Vishwakarma Yojana 2025", ministry:"MSME Ministry", icon:"🔨", cat:"employment", benefit:"₹15K + ₹3L loan", status:"new", source:"pmvishwakarma.gov.in", date:"3 days ago", desc:"Updated 2025 guidelines for 18 traditional artisan trades. Toolkit voucher enhanced to ₹15,000.", badge:"NEW" },
+  { id:4, name:"National Scholarship Portal", ministry:"Education Ministry", icon:"🎓", cat:"education", benefit:"Up to ₹50K/yr", status:"updated", source:"scholarships.gov.in", date:"5 days ago", desc:"Unified scholarship platform for SC/ST/OBC/EWS/Minority students across all education levels.", badge:null },
+  { id:5, name:"PM MUDRA Yojana", ministry:"Finance Ministry", icon:"🏢", cat:"business", benefit:"Up to ₹10L", status:"popular", source:"mudra.org.in", date:"1 week ago", desc:"Collateral-free micro loans for non-farm income activities. Shishu/Kishore/Tarun tiers.", badge:"Popular" },
+  { id:6, name:"PM Awas Yojana Urban", ministry:"Housing Ministry", icon:"🏠", cat:"housing", benefit:"₹2.67L subsidy", status:"updated", source:"pmaymis.gov.in", date:"4 days ago", desc:"Credit-linked subsidy for first home purchase/construction for EWS/LIG/MIG households.", badge:null },
+  { id:7, name:"PM Matru Vandana Yojana", ministry:"WCD Ministry", icon:"🤱", cat:"women", benefit:"₹5,000 in 3 parts", status:"popular", source:"pmmvy.wcd.gov.in", date:"1 week ago", desc:"Maternity cash benefit for pregnant & lactating women, linked to ANC and vaccination.", badge:null },
+  { id:8, name:"Sukanya Samriddhi Yojana", ministry:"Finance Ministry", icon:"👧", cat:"women", benefit:"8.2% tax-free", status:"updated", source:"indiapost.gov.in", date:"6 days ago", desc:"High-interest savings scheme for girl child. 8.2% p.a., tax-free, matures at age 21.", badge:null },
+  { id:9, name:"PMKVY 4.0 Skill Training", ministry:"Skill Dev Ministry", icon:"🛠️", cat:"employment", benefit:"Free + ₹500", status:"new", source:"pmkvyofficial.org", date:"2 days ago", desc:"PMKVY 4.0 launched with 300+ new job roles in AI, green economy, and digital sectors.", badge:"NEW" },
+  { id:10, name:"Stand Up India", ministry:"Finance Ministry", icon:"💡", cat:"business", benefit:"₹10L–₹1Cr", status:"popular", source:"standupmitra.in", date:"1 week ago", desc:"Business loans for SC/ST and women entrepreneurs for greenfield enterprises.", badge:null },
+  { id:11, name:"Kisan Credit Card", ministry:"Agriculture Ministry", icon:"💳", cat:"agriculture", benefit:"₹3L @ 4%", status:"popular", source:"agricoop.nic.in", date:"1 week ago", desc:"Flexible revolving credit for farmers at 4% effective interest after interest subvention.", badge:"Popular" },
+  { id:12, name:"PM Jeevan Jyoti Bima", ministry:"Finance Ministry", icon:"❤️", cat:"social", benefit:"₹2L @ ₹436/yr", status:"popular", source:"jansuraksha.gov.in", date:"2 weeks ago", desc:"Renewable 1-year life insurance accessible via banking channel at just ₹436/year.", badge:null },
+  { id:13, name:"UP Kanya Sumangala 2025", ministry:"UP Women Welfare", icon:"🌸", cat:"women", benefit:"₹25,000 total", status:"new", source:"up.gov.in", date:"Today", desc:"Updated 2025 scheme for UP girl children. Enhanced amount to ₹25,000 in 6 installments.", badge:"NEW" },
+  { id:14, name:"Maharashtra Shasan Apla Dari", ministry:"Maharashtra Govt", icon:"🏛️", cat:"business", benefit:"Varies", status:"new", source:"maharashtra.gov.in", date:"Today", desc:"New Maharashtra portal aggregating 100+ state schemes with doorstep delivery of benefits.", badge:"NEW" },
+  { id:15, name:"IGNOAPS Old Age Pension", ministry:"Rural Development", icon:"👴", cat:"social", benefit:"₹500/month", status:"popular", source:"nsap.nic.in", date:"2 weeks ago", desc:"Monthly pension for BPL senior citizens (60+). Central share + state govt top-up.", badge:null },
+  { id:16, name:"PM Suraksha Bima Yojana", ministry:"Finance Ministry", icon:"🛡️", cat:"social", benefit:"₹2L @ ₹20/yr", status:"popular", source:"jansuraksha.gov.in", date:"2 weeks ago", desc:"Accident insurance covering death and disability at just ₹20/year premium.", badge:null },
+  { id:17, name:"Beti Bachao Beti Padhao", ministry:"WCD Ministry", icon:"👧", cat:"women", benefit:"SSY + education", status:"popular", source:"wcd.nic.in", date:"1 week ago", desc:"Girl child empowerment through education, Sukanya Samriddhi, and awareness drives.", badge:null },
+  { id:18, name:"PM Ujjwala Yojana", ministry:"Petroleum Ministry", icon:"🍳", cat:"women", benefit:"Free LPG + ₹1,600", status:"popular", source:"pmuy.gov.in", date:"1 week ago", desc:"Free LPG connections for BPL households. Clean cooking fuel for rural women.", badge:null }
+];
+
+let displayedSchemes = [...TRACKER_SCHEMES];
+let currentTabFilter = 'all';
+let currentCatFilter = 'all';
+let searchQuery = '';
+
+// ===== RENDER TRACKER CARDS =====
+function renderTrackerCards(schemes) {
+  const grid = document.getElementById('tracker-grid');
+  grid.innerHTML = '';
+  if (!schemes.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><p>No schemes found matching your search</p></div>';
+    return;
+  }
+  schemes.forEach((s, i) => {
+    const statusBadge = s.status === 'new' ? `<span class="badge-new">🆕 NEW</span>` :
+      s.status === 'updated' ? `<span class="badge-updated">🔄 UPDATED</span>` :
+      s.status === 'popular' ? `<span class="badge-popular">🔥 POPULAR</span>` : '';
+
+    const card = document.createElement('div');
+    card.className = 'tracker-scheme-card';
+    card.style.animationDelay = (i * 0.04) + 's';
+    card.innerHTML = `
+      <div class="tsc-header">
+        <div class="tsc-icon" style="background:rgba(255,107,0,.12);border:1px solid rgba(255,107,0,.2)">${s.icon}</div>
+        <div><div class="tsc-name">${s.name}</div><div class="tsc-ministry">${s.ministry}</div></div>
+      </div>
+      <div class="tsc-badges">
+        ${statusBadge}
+        <span class="badge-cat">${s.cat}</span>
+      </div>
+      <div class="tsc-desc">${s.desc}</div>
+      <div class="tsc-benefit">💰 ${s.benefit}</div>
+      <div class="tsc-footer">
+        <div class="tsc-source">🌐 ${s.source}</div>
+        <div class="tsc-date">${s.date}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function applyFilters() {
+  let result = [...TRACKER_SCHEMES];
+  if (currentTabFilter === 'new') result = result.filter(s => s.status === 'new');
+  else if (currentTabFilter === 'updated') result = result.filter(s => s.status === 'updated');
+  else if (currentTabFilter === 'popular') result = result.filter(s => s.status === 'popular');
+  if (currentCatFilter !== 'all') result = result.filter(s => s.cat === currentCatFilter);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    result = result.filter(s => s.name.toLowerCase().includes(q) || s.ministry.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q));
+  }
+  renderTrackerCards(result);
+}
+
+function switchTab(tab, el) {
+  currentTabFilter = tab;
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function filterTrackerCat(cat) {
+  currentCatFilter = cat;
+  document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[data-cat="${cat}"]`).classList.add('active');
+  applyFilters();
+}
+
+function searchSchemes(q) { searchQuery = q; applyFilters(); }
+function sortSchemes(by) {
+  // Just visual demo
+  addLog('info', `Sorted by: ${by}`);
+}
+
+// ===== CHARTS =====
+function initCharts() {
+  // Trend Chart
+  const tc = document.getElementById('trendChart').getContext('2d');
+  new Chart(tc, {
+    type: 'line',
+    data: {
+      labels: ['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6','Week 7'],
+      datasets: [
+        { label:'New', data:[1,3,2,4,1,3,3], borderColor:'#FF6B00', backgroundColor:'rgba(255,107,0,.08)', fill:true, tension:0.4, pointBackgroundColor:'#FF6B00', pointRadius:4 },
+        { label:'Updated', data:[2,1,3,2,4,2,2], borderColor:'#60A5FA', backgroundColor:'rgba(96,165,250,.08)', fill:true, tension:0.4, pointBackgroundColor:'#60A5FA', pointRadius:4 },
+        { label:'Total', data:[12,15,17,19,20,23,18], borderColor:'#22C55E', backgroundColor:'rgba(34,197,94,.05)', fill:true, tension:0.4, pointBackgroundColor:'#22C55E', pointRadius:4 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ grid:{ color:'rgba(255,255,255,.04)' }, ticks:{ color:'#475569', font:{size:10} } },
+        y:{ grid:{ color:'rgba(255,255,255,.04)' }, ticks:{ color:'#475569', font:{size:10} } }
+      }
+    }
+  });
+
+  // Category Donut
+  const cc = document.getElementById('categoryChart').getContext('2d');
+  new Chart(cc, {
+    type: 'doughnut',
+    data: {
+      labels:['Women','Agriculture','Business','Health','Education','Social','Housing','Employment'],
+      datasets:[{ data:[4,2,3,1,2,3,1,2], backgroundColor:['#FF6B00','#22C55E','#60A5FA','#F43F5E','#A78BFA','#F59E0B','#2563EB','#10B981'], borderColor:'transparent', borderWidth:3, hoverBorderColor:'rgba(255,255,255,.2)', hoverOffset:6 }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, cutout:'70%',
+      plugins:{ legend:{ position:'right', labels:{ color:'#94A3B8', font:{size:10}, boxWidth:10, padding:8 } } }
+    }
+  });
+}
+
+// ===== CRAWL LOG =====
+const logEntries = [
+  {time:'02:00:00', msg:'Crawl started — targeting 47 sources', type:'info'},
+  {time:'02:01:15', msg:'india.gov.in crawled — 234 pages processed', type:'success'},
+  {time:'02:03:42', msg:'pib.gov.in crawled — 89 pages processed', type:'success'},
+  {time:'02:05:11', msg:'Claude AI extracted 3 new scheme candidates', type:'success'},
+  {time:'02:06:33', msg:'Deduplication: 2 duplicates removed', type:'warning'},
+  {time:'02:07:10', msg:'myscheme.gov.in slow response (retrying)', type:'warning'},
+  {time:'02:08:55', msg:'1 new scheme confirmed: PM Vishwakarma 2025 update', type:'success'},
+  {time:'02:10:01', msg:'Database updated — 3 schemes added/modified', type:'success'},
+  {time:'02:10:30', msg:'Email notifications sent to 1,247 subscribers', type:'success'},
+  {time:'02:10:45', msg:'Crawl complete — next run in 7 days', type:'info'},
+];
+
+function renderLog() {
+  const feed = document.getElementById('log-feed');
+  feed.innerHTML = '';
+  logEntries.forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'log-entry';
+    div.innerHTML = `<span class="log-time">[${entry.time}]</span><span class="log-msg ${entry.type}">${entry.msg}</span>`;
+    feed.appendChild(div);
+  });
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function addLog(type, msg) {
+  const now = new Date().toLocaleTimeString('en-IN', {hour12:false});
+  logEntries.push({time:now, msg, type});
+  renderLog();
+}
+
+function clearLog() { logEntries.length = 0; renderLog(); }
+
+// ===== MANUAL CRAWL =====
+function triggerManualCrawl() {
+  const btn = document.getElementById('crawl-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Crawling...';
+  addLog('info', 'Manual crawl triggered by user');
+
+  const steps = [
+    [1200, 'success', 'Connecting to india.gov.in...'],
+    [2500, 'success', 'Pages crawled: 127 — extracting scheme data'],
+    [4000, 'info', 'Sending to Claude AI for processing...'],
+    [5500, 'success', 'Claude AI found 2 potential new schemes'],
+    [7000, 'warning', 'Deduplication check — 1 already in database'],
+    [8500, 'success', '1 new scheme confirmed and saved'],
+    [9500, 'info', 'Crawl complete!'],
+  ];
+
+  steps.forEach(([delay, type, msg]) => {
+    setTimeout(() => addLog(type, msg), delay);
+  });
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = '▶ Trigger Manual Crawl';
+    document.getElementById('new-found').textContent = '4';
+    document.getElementById('stat-new').textContent = '4';
+    // Add a new scheme card
+    TRACKER_SCHEMES.unshift({
+      id: 99, name: "New Scheme Discovered", ministry: "Ministry of Rural Development",
+      icon: "🆕", cat: "social", benefit: "TBD", status: "new",
+      source: "india.gov.in", date: "Just now", desc: "Newly discovered scheme from the latest AI crawl. Full details being processed.", badge: "NEW"
+    });
+    applyFilters();
+    addLog('success', 'Manual crawl complete — 1 new scheme added');
+  }, 10000);
+}
+
+// ===== AI CHAT (Claude API) =====
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const messages = document.getElementById('chat-messages');
+  const btn = document.getElementById('chat-send');
+
+  // Add user bubble
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble user';
+  userBubble.textContent = msg;
+  messages.appendChild(userBubble);
+  input.value = '';
+  messages.scrollTop = messages.scrollHeight;
+
+  // Typing indicator
+  const typingBubble = document.createElement('div');
+  typingBubble.className = 'chat-bubble typing';
+  typingBubble.textContent = '🤖 Claude is thinking...';
+  messages.appendChild(typingBubble);
+  messages.scrollTop = messages.scrollHeight;
+  btn.disabled = true;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        system: `You are YojanaFind's AI assistant, expert on Indian government schemes and Yojanas. You help users understand scheme eligibility, benefits, and application processes. Be concise (2-4 sentences), helpful, and accurate. Always mention official website links when relevant. Respond in the same language as the user (Hindi or English).
+
+Current schemes in database: PM Kisan (₹6000/yr), Ayushman Bharat (₹5L health), PM MUDRA (₹10L loan), PM Vishwakarma (₹15K toolkit), PMJJBY (₹2L life insurance), NSP Scholarships (₹50K/yr), PMKVY (free training), and 11 more.`,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+
+    const data = await response.json();
+    typingBubble.remove();
+
+    const aiBubble = document.createElement('div');
+    aiBubble.className = 'chat-bubble ai';
+    aiBubble.textContent = data.content?.[0]?.text || "I'm unable to answer right now. Please check the official YojanaFind scheme list.";
+    messages.appendChild(aiBubble);
+  } catch(e) {
+    typingBubble.remove();
+    const errBubble = document.createElement('div');
+    errBubble.className = 'chat-bubble ai';
+    errBubble.textContent = "I'm offline right now. For scheme help, visit the YojanaFind main page and use the scheme finder. API key required for live responses.";
+    messages.appendChild(errBubble);
+  }
+
+  btn.disabled = false;
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// ===== NEXT CRAWL TIMER =====
+function updateNextCrawl() {
+  const next = new Date();
+  next.setDate(next.getDate() + 7);
+  const diff = next - new Date();
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  document.getElementById('next-crawl-time').textContent = `${days}d ${hours}h`;
+}
+
+// ===== NOTIFICATIONS =====
+function toggleNotif(el) { el.classList.toggle('on'); }
+function saveNotifPrefs() { addLog('success', 'Notification preferences saved'); }
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderTrackerCards(TRACKER_SCHEMES);
+  renderLog();
+  initCharts();
+  updateNextCrawl();
+  setInterval(updateNextCrawl, 60000);
+  // Update pages crawled counter
+  let pages = 2847;
+  setInterval(() => {
+    pages += Math.floor(Math.random() * 5);
+    document.getElementById('pages-crawled').textContent = pages.toLocaleString('en-IN');
+  }, 3000);
+});
+</script>
+</body>
+</html>

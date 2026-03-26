@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YojanaFind — Discover Your Government Benefits</title>
+<meta name="description" content="Every Indian government scheme you qualify for. Free, instant, no login.">
+<meta property="og:title" content="YojanaFind — India's Scheme Finder">
+<meta property="og:description" content="Find all central and state government schemes you qualify for in under 60 seconds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden;font-size:16px}
+
+/* ─── DESIGN TOKENS ─────────────────────────── */
+:root{
+  /* Palette — warm cream, deep ink, true saffron */
+  --paper:    #FAF7F2;
+  --paper2:   #F2EDE4;
+  --paper3:   #E8DFD2;
+  --ink:      #1C1410;
+  --ink2:     #3D2E22;
+  --muted:    #7A6555;
+  --muted2:   #A08C7A;
+  --saffron:  #E8601C;
+  --saffron2: #F28240;
+  --green:    #1B6B3A;
+  --green2:   #2D9B55;
+  --cream:    #FFF9F0;
+  --border:   rgba(60,40,20,.1);
+  --border2:  rgba(60,40,20,.18);
+
+  /* Typography */
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Plus Jakarta Sans', system-ui, sans-serif;
+  --hindi:    'Noto Sans Devanagari', sans-serif;
+
+  /* Shadows — warm tinted */
+  --s1: 0 1px 4px rgba(60,40,20,.08);
+  --s2: 0 4px 20px rgba(60,40,20,.10);
+  --s3: 0 12px 48px rgba(60,40,20,.14);
+  --s4: 0 24px 80px rgba(60,40,20,.18);
+}
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ─── NAVIGATION ─────────────────────────────── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  transition:all .35s ease;
+  padding:1.25rem 4rem;
+}
+.nav.stuck{
+  background:rgba(250,247,242,.94);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:.9rem 4rem;
+  box-shadow:var(--s1);
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1280px;margin:0 auto;
+}
+.logo{
+  font-family:var(--serif);font-size:1.6rem;font-weight:700;
+  color:var(--ink);text-decoration:none;letter-spacing:-.01em;
+  display:flex;align-items:baseline;gap:.15rem;
+}
+.logo-accent{color:var(--saffron)}
+.logo-flag{font-size:1.1rem;margin-right:.25rem}
+.nav-links{
+  display:flex;align-items:center;gap:2.5rem;
+  list-style:none;
+}
+.nav-links a{
+  font-size:.875rem;font-weight:500;
+  color:var(--muted);text-decoration:none;
+  transition:color .2s;letter-spacing:.01em;
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:.75rem}
+.nav-btn-ghost{
+  font-size:.875rem;font-weight:600;color:var(--ink);
+  padding:.5rem 1rem;border-radius:8px;text-decoration:none;
+  transition:background .2s;
+}
+.nav-btn-ghost:hover{background:var(--paper2)}
+.nav-btn-fill{
+  font-size:.875rem;font-weight:700;
+  background:var(--saffron);color:#fff;
+  padding:.55rem 1.3rem;border-radius:8px;
+  text-decoration:none;transition:all .2s;
+  box-shadow:0 2px 8px rgba(232,96,28,.3);
+}
+.nav-btn-fill:hover{
+  background:var(--saffron2);
+  box-shadow:0 4px 16px rgba(232,96,28,.4);
+  transform:translateY(-1px);
+}
+.tricolor-line{
+  height:2px;
+  background:linear-gradient(90deg,
+    var(--saffron) 33.33%,
+    #fff 33.33% 66.66%,
+    var(--green) 66.66%
+  );
+  margin-top:0;
+}
+
+/* ─── HERO ───────────────────────────────────── */
+.hero{
+  min-height:100vh;
+  padding:0 4rem;
+  display:flex;align-items:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* Background texture */
+.hero::before{
+  content:'';
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 50%,rgba(232,96,28,.05),transparent),
+    radial-gradient(ellipse 50% 80% at 10% 80%,rgba(27,107,58,.04),transparent);
+  pointer-events:none;
+}
+
+/* Decorative lines — editorial detail */
+.hero-rule{
+  position:absolute;top:0;left:0;bottom:0;
+  width:1px;background:var(--border);
+  display:none;
+}
+.hero-rule:nth-child(1){left:4rem}
+.hero-rule:nth-child(2){right:4rem}
+
+.hero-inner{
+  max-width:1280px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:6rem;
+  padding-top:7rem;
+}
+
+/* Left — Copy */
+.hero-copy{}
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--saffron);margin-bottom:1.5rem;
+}
+.hero-kicker::before{
+  content:'';display:block;
+  width:24px;height:1px;background:var(--saffron);
+}
+.hero-h1{
+  font-family:var(--serif);
+  font-size:clamp(3rem,5vw,5.5rem);
+  font-weight:600;
+  line-height:1.04;
+  letter-spacing:-.02em;
+  color:var(--ink);
+  margin-bottom:1.6rem;
+}
+.hero-h1 .italic{font-style:italic;color:var(--saffron)}
+.hero-h1 .block{display:block}
+
+.hero-sub{
+  font-size:1.05rem;line-height:1.8;
+  color:var(--muted);max-width:420px;
+  margin-bottom:2.5rem;
+  font-weight:400;
+}
+.hero-sub strong{color:var(--ink);font-weight:600}
+
+.hero-actions{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
+.cta-primary{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:var(--ink);color:#fff;
+  font-size:.925rem;font-weight:700;
+  padding:.85rem 1.9rem;border-radius:10px;
+  text-decoration:none;
+  transition:all .25s;
+  box-shadow:var(--s2);
+  letter-spacing:.01em;
+}
+.cta-primary:hover{
+  background:var(--ink2);
+  transform:translateY(-2px);
+  box-shadow:var(--s3);
+}
+.cta-primary .arrow{
+  transition:transform .2s;
+}
+.cta-primary:hover .arrow{transform:translateX(3px)}
+
+.cta-secondary{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.925rem;font-weight:600;
+  color:var(--muted);text-decoration:none;
+  padding:.85rem 0;
+  transition:color .2s;
+  letter-spacing:.01em;
+  border-bottom:1.5px solid transparent;
+}
+.cta-secondary:hover{color:var(--ink);border-color:var(--ink)}
+
+.hero-meta{
+  display:flex;align-items:center;gap:2rem;
+  padding-top:2rem;
+  border-top:1px solid var(--border);
+}
+.hero-meta-item{
+  display:flex;flex-direction:column;gap:.15rem;
+}
+.meta-num{
+  font-family:var(--serif);font-size:1.8rem;font-weight:700;
+  color:var(--ink);line-height:1;letter-spacing:-.02em;
+}
+.meta-num .sup{font-size:.9rem;vertical-align:super;letter-spacing:0}
+.meta-label{font-size:.72rem;font-weight:600;color:var(--muted2);letter-spacing:.06em;text-transform:uppercase}
+.meta-divider{width:1px;height:36px;background:var(--border2);align-self:center}
+.hero-hindi{
+  font-family:var(--hindi);font-size:.8rem;color:var(--muted2);
+  margin-top:.6rem;
+}
+
+/* Right — Visual stack */
+.hero-visual{
+  position:relative;
+  padding:2rem 0;
+}
+
+/* Large background card */
+.vis-bg-card{
+  position:absolute;
+  top:10%;right:-40px;
+  width:88%;height:76%;
+  background:var(--paper2);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  box-shadow:var(--s2);
+}
+
+/* Main scheme card */
+.vis-main-card{
+  position:relative;z-index:3;
+  background:#fff;
+  border:1px solid var(--border2);
+  border-radius:16px;
+  box-shadow:var(--s4);
+  overflow:hidden;
+  margin:0 2rem;
+}
+.vmc-stripe{height:3px;background:linear-gradient(90deg,var(--saffron),#F7B731)}
+.vmc-body{padding:1.6rem}
+.vmc-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.2rem}
+.vmc-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:#FFF5EE;border:1px solid #FDD0B5;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;
+}
+.vmc-title{
+  font-family:var(--serif);font-size:1.15rem;font-weight:600;
+  color:var(--ink);line-height:1.25;
+}
+.vmc-ministry{font-size:.72rem;color:var(--muted2);margin-top:.15rem;font-weight:500}
+.vmc-badge{
+  margin-left:auto;
+  background:var(--saffron);color:#fff;
+  font-size:.62rem;font-weight:800;
+  padding:.2rem .6rem;border-radius:50px;
+  letter-spacing:.05em;text-transform:uppercase;
+  white-space:nowrap;align-self:flex-start;
+}
+.vmc-benefit{
+  background:#F0FDF6;border:1px solid #BBF7D0;
+  border-radius:10px;padding:.75rem 1rem;
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.85rem;font-weight:700;color:var(--green);
+  margin-bottom:1.1rem;
+}
+.vmc-desc{font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:1.2rem}
+.vmc-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.vmc-tag{
+  background:var(--paper2);border:1px solid var(--border);
+  color:var(--muted);font-size:.68rem;font-weight:600;
+  padding:.2rem .65rem;border-radius:50px;
+}
+.vmc-progress{margin-bottom:1.4rem}
+.progress-row{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:.4rem}
+.progress-title{color:var(--muted);font-weight:500}
+.progress-pct{color:var(--green);font-weight:700}
+.progress-track{height:4px;background:var(--paper2);border-radius:2px;overflow:hidden}
+.progress-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--green),var(--green2));
+  animation:fill 1.5s 1.2s ease both;
+}
+@keyframes fill{from{width:0}to{width:82%}}
+.vmc-footer{display:flex;gap:.6rem}
+.vmc-btn-primary{
+  flex:1;background:var(--ink);color:#fff;
+  border:none;border-radius:8px;padding:.6rem;
+  font-size:.8rem;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:background .2s;
+  text-align:center;text-decoration:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.vmc-btn-primary:hover{background:var(--ink2)}
+.vmc-btn-ghost{
+  background:transparent;border:1px solid var(--border2);
+  color:var(--muted);border-radius:8px;padding:.6rem 1rem;
+  font-size:.8rem;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:all .2s;white-space:nowrap;
+}
+.vmc-btn-ghost:hover{border-color:var(--saffron);color:var(--saffron)}
+
+/* Floating small cards */
+.float-card{
+  position:absolute;
+  background:#fff;
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:.75rem 1rem;
+  box-shadow:var(--s2);
+  z-index:4;
+}
+.fc-1{
+  bottom:-10px;left:-30px;
+  animation:fc-bob 5s ease-in-out infinite;
+}
+.fc-2{
+  top:-5px;right:-20px;
+  animation:fc-bob 6s ease-in-out infinite 2s;
+}
+@keyframes fc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fc-label{font-size:.65rem;font-weight:700;color:var(--muted2);letter-spacing:.05em;text-transform:uppercase;margin-bottom:.25rem}
+.fc-value{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:.4rem;line-height:1}
+.fc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.fc-dot.green{background:var(--green2)}
+.fc-dot.saffron{background:var(--saffron)}
+.fc-sub{font-size:.68rem;color:var(--muted2);margin-top:.15rem}
+
+/* Ticker — scheme names */
+.vis-ticker{
+  display:flex;gap:.5rem;margin-top:1.5rem;
+  overflow:hidden;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);
+  mask:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);
+}
+.ticker-track{
+  display:flex;gap:.5rem;
+  animation:tickerScroll 20s linear infinite;
+  flex-shrink:0;
+}
+.ticker-chip{
+  background:#fff;border:1px solid var(--border2);
+  border-radius:50px;padding:.3rem .8rem;
+  font-size:.72rem;font-weight:600;color:var(--muted);
+  white-space:nowrap;box-shadow:var(--s1);
+  display:flex;align-items:center;gap:.35rem;
+}
+.ticker-chip .amt{color:var(--ink);font-weight:700}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── MARQUEE BAR ─────────────────────────────── */
+.marquee-bar{
+  background:var(--ink);
+  padding:.85rem 0;overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.marquee-track{
+  display:flex;gap:2.5rem;
+  animation:marquee 30s linear infinite;
+  width:max-content;
+}
+.marquee-item{
+  display:flex;align-items:center;gap:.6rem;
+  font-size:.78rem;font-weight:500;
+  color:rgba(255,255,255,.55);
+  white-space:nowrap;
+}
+.mi-amount{color:#fff;font-weight:700}
+.mi-sep{color:rgba(255,255,255,.2)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── SECTION BASE ───────────────────────────── */
+.section{padding:7rem 4rem}
+.section-inner{max-width:1280px;margin:0 auto}
+.eyebrow{
+  display:flex;align-items:center;gap:.75rem;
+  font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--saffron);margin-bottom:1.2rem;
+}
+.eyebrow::before{content:'';width:20px;height:1.5px;background:var(--saffron)}
+.section-h2{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,4vw,3.8rem);
+  font-weight:600;line-height:1.08;
+  letter-spacing:-.02em;color:var(--ink);
+}
+.section-h2 em{font-style:italic;color:var(--saffron)}
+.section-p{
+  color:var(--muted);font-size:1rem;line-height:1.8;
+  max-width:500px;margin-top:.9rem;
+}
+
+/* ─── STATS BAND ──────────────────────────────── */
+.stats-band{
+  background:var(--ink);padding:5rem 4rem;
+}
+.stats-inner{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:3rem;
+}
+.stat{border-left:1px solid rgba(255,255,255,.12);padding-left:2rem}
+.stat:first-child{border-left:none;padding-left:0}
+.stat-n{
+  font-family:var(--serif);font-size:3.5rem;font-weight:600;
+  color:#fff;line-height:1;letter-spacing:-.02em;
+  margin-bottom:.4rem;
+}
+.stat-n .sup{color:var(--saffron);font-size:1.8rem;vertical-align:super;letter-spacing:0}
+.stat-l{font-size:.82rem;font-weight:500;color:rgba(255,255,255,.45);line-height:1.5}
+.stat-desc{font-size:.75rem;color:rgba(255,255,255,.25);margin-top:.2rem}
+
+/* ─── FEATURES ───────────────────────────────── */
+.features-section{background:var(--paper)}
+.feat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  border:1px solid var(--border2);
+  border-radius:20px;overflow:hidden;
+  margin-top:3.5rem;
+  box-shadow:var(--s2);
+}
+.feat-cell{
+  background:#fff;padding:2.2rem;
+  transition:background .2s;
+  position:relative;
+}
+.feat-cell:hover{background:var(--cream)}
+.feat-cell::after{
+  content:'';position:absolute;
+  right:0;top:1.5rem;bottom:1.5rem;
+  width:1px;background:var(--border);
+}
+.feat-cell:nth-child(3n)::after{display:none}
+.feat-ico{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;margin-bottom:1.3rem;
+}
+.fi-warm{background:#FFF2E8;border:1px solid #FECBA8}
+.fi-cool{background:#EFF6FF;border:1px solid #BFDBFE}
+.fi-earth{background:#F0FDF4;border:1px solid #BBF7D0}
+.feat-h{
+  font-family:var(--serif);font-size:1.2rem;font-weight:600;
+  color:var(--ink);margin-bottom:.5rem;letter-spacing:-.01em;
+}
+.feat-p{font-size:.85rem;color:var(--muted);line-height:1.7}
+.feat-tag{
+  display:inline-block;margin-top:1rem;
+  font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted2);
+}
+
+/* ─── HOW IT WORKS ────────────────────────────── */
+.hiw-section{background:var(--paper2)}
+.hiw-layout{
+  display:grid;grid-template-columns:5fr 4fr;
+  gap:7rem;align-items:start;
+  margin-top:4rem;
+}
+.hiw-steps{display:flex;flex-direction:column;gap:0}
+.hiw-step{
+  display:flex;gap:1.5rem;
+  padding:1.8rem 0;
+  border-bottom:1px solid var(--border);
+  position:relative;cursor:default;
+  transition:all .2s;
+}
+.hiw-step:last-child{border-bottom:none}
+.hiw-step:hover{padding-left:.5rem}
+.step-marker{
+  display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;
+  padding-top:.2rem;
+}
+.step-n{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--ink);color:#fff;
+  font-family:var(--serif);font-weight:700;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.step-line{
+  width:1px;height:100%;flex:1;
+  background:var(--border2);margin-top:.5rem;
+}
+.hiw-step:last-child .step-line{display:none}
+.step-content{}
+.step-h{font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--ink);margin-bottom:.3rem}
+.step-p{font-size:.85rem;color:var(--muted);line-height:1.65}
+
+/* Phone */
+.hiw-phone{
+  background:#fff;
+  border:1px solid var(--border2);
+  border-radius:24px;
+  padding:1.6rem;
+  box-shadow:var(--s4);
+  position:sticky;top:8rem;
+}
+.phone-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:1rem;margin-bottom:1rem;
+  border-bottom:1px solid var(--border);
+}
+.phone-title{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--ink)}
+.phone-badge{
+  background:var(--green);color:#fff;
+  font-size:.65rem;font-weight:700;
+  padding:.2rem .6rem;border-radius:50px;
+}
+.phone-row{
+  background:var(--paper);border:1px solid var(--border);
+  border-radius:9px;padding:.6rem .85rem;
+  margin-bottom:.5rem;
+}
+.pr-label{font-size:.62rem;color:var(--muted2);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.1rem}
+.pr-value{font-size:.82rem;color:var(--ink);font-weight:600}
+.phone-cta{
+  background:var(--saffron);color:#fff;
+  border-radius:9px;padding:.75rem;
+  text-align:center;font-size:.85rem;font-weight:700;
+  margin:1rem 0 .8rem;cursor:pointer;
+  transition:background .2s;
+}
+.phone-result{
+  border-radius:9px;padding:.75rem .9rem;margin-bottom:.5rem;
+}
+.pr-green{background:#F0FDF6;border:1px solid #BBF7D0}
+.pr-blue{background:#EFF6FF;border:1px solid #BFDBFE}
+.pr-name{font-weight:700;font-size:.82rem;color:var(--ink);margin-bottom:.15rem}
+.pr-amt{font-size:.78rem;font-weight:700}
+.pr-amt.g{color:var(--green)}
+.pr-amt.b{color:#1D4ED8}
+.phone-more{font-size:.72rem;color:var(--muted2);text-align:center;margin-top:.6rem}
+
+/* ─── SCHEME CARDS ────────────────────────────── */
+.schemes-section{background:var(--paper)}
+.schemes-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;margin-top:3.5rem;
+}
+.sc{
+  background:#fff;
+  border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;
+  box-shadow:var(--s1);
+  transition:all .3s;
+}
+.sc:hover{
+  box-shadow:var(--s3);
+  transform:translateY(-4px);
+  border-color:rgba(232,96,28,.25);
+}
+.sc-top-bar{height:2.5px}
+.stb-saffron{background:linear-gradient(90deg,var(--saffron),#F7B731)}
+.stb-green{background:linear-gradient(90deg,var(--green),var(--green2))}
+.stb-blue{background:linear-gradient(90deg,#1D4ED8,#3B82F6)}
+.sc-body{padding:1.4rem}
+.sc-head{display:flex;align-items:flex-start;gap:.9rem;margin-bottom:1rem}
+.sc-ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.sci-s{background:#FFF2E8;border:1px solid #FECBA8}
+.sci-g{background:#F0FDF4;border:1px solid #BBF7D0}
+.sci-b{background:#EFF6FF;border:1px solid #BFDBFE}
+.sc-title{font-family:var(--serif);font-size:.97rem;font-weight:600;color:var(--ink);line-height:1.3}
+.sc-min{font-size:.7rem;color:var(--muted2);margin-top:.1rem}
+.sc-desc{font-size:.82rem;color:var(--muted);line-height:1.65;margin-bottom:1rem}
+.sc-amount{
+  display:flex;align-items:center;gap:.4rem;
+  background:#F0FDF6;border:1px solid #BBF7D0;
+  border-radius:8px;padding:.5rem .8rem;
+  font-size:.8rem;font-weight:700;color:var(--green);
+  margin-bottom:.9rem;
+}
+.sc-chips{display:flex;gap:.3rem;flex-wrap:wrap}
+.sc-chip{
+  background:var(--paper2);border:1px solid var(--border);
+  font-size:.67rem;font-weight:600;color:var(--muted);
+  padding:.16rem .55rem;border-radius:50px;
+}
+.view-all-wrap{text-align:center;margin-top:2.5rem}
+.view-all{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.875rem;font-weight:700;color:var(--ink);
+  text-decoration:none;padding:.75rem 1.8rem;
+  border:1.5px solid var(--border2);border-radius:10px;
+  transition:all .2s;
+}
+.view-all:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ─── TESTIMONIALS ────────────────────────────── */
+.testi-section{background:var(--paper2)}
+.testi-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;margin-top:3.5rem;
+}
+.tc{
+  background:#fff;border:1px solid var(--border2);
+  border-radius:16px;padding:2rem;
+  box-shadow:var(--s1);
+  transition:all .3s;
+}
+.tc:hover{box-shadow:var(--s3);transform:translateY(-3px)}
+.tc-stars{color:#F59E0B;font-size:.85rem;letter-spacing:2px;margin-bottom:1rem}
+.tc-q{
+  font-family:var(--serif);font-size:3rem;line-height:.8;
+  color:var(--saffron);opacity:.25;margin-bottom:.6rem;
+}
+.tc-text{font-size:.875rem;color:var(--muted);line-height:1.75;font-style:italic;margin-bottom:1.4rem}
+.tc-author{display:flex;align-items:center;gap:.8rem}
+.tc-avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;background:var(--paper2);
+  border:1px solid var(--border2);flex-shrink:0;
+}
+.tc-name{font-weight:700;font-size:.85rem;color:var(--ink)}
+.tc-location{font-size:.72rem;color:var(--muted2)}
+.tc-earned{
+  margin-top:1rem;padding:.55rem .8rem;
+  background:#F0FDF6;border:1px solid #BBF7D0;
+  border-radius:8px;font-size:.75rem;color:var(--green);font-weight:700;
+}
+
+/* ─── CTA SECTION ────────────────────────────── */
+.cta-section{
+  background:var(--ink);
+  padding:8rem 4rem;
+  position:relative;overflow:hidden;
+}
+.cta-section::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:
+    radial-gradient(ellipse 60% 60% at 80% 50%,rgba(232,96,28,.12),transparent),
+    radial-gradient(ellipse 40% 60% at 20% 80%,rgba(27,107,58,.08),transparent);
+  pointer-events:none;
+}
+/* Decorative quote mark */
+.cta-section::after{
+  content:'"';
+  position:absolute;top:-2rem;right:6rem;
+  font-family:var(--serif);font-size:20rem;font-weight:700;
+  color:rgba(255,255,255,.02);line-height:1;
+  pointer-events:none;
+}
+.cta-inner{
+  max-width:700px;margin:0 auto;text-align:center;
+  position:relative;z-index:2;
+}
+.cta-eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--saffron);
+  margin-bottom:1.5rem;display:block;
+}
+.cta-h2{
+  font-family:var(--serif);
+  font-size:clamp(2.5rem,5vw,4.2rem);
+  font-weight:600;line-height:1.08;
+  letter-spacing:-.02em;color:#fff;
+  margin-bottom:1.2rem;
+}
+.cta-h2 em{font-style:italic;color:var(--saffron)}
+.cta-p{
+  color:rgba(255,255,255,.5);font-size:1rem;
+  line-height:1.8;margin-bottom:2.5rem;
+}
+.cta-buttons{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+.cta-btn-main{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:var(--saffron);color:#fff;
+  font-size:.975rem;font-weight:700;
+  padding:.9rem 2.2rem;border-radius:10px;
+  text-decoration:none;transition:all .25s;
+  box-shadow:0 4px 20px rgba(232,96,28,.4);
+  letter-spacing:.01em;
+}
+.cta-btn-main:hover{
+  background:var(--saffron2);
+  box-shadow:0 8px 30px rgba(232,96,28,.5);
+  transform:translateY(-2px);
+}
+.cta-btn-ghost{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.975rem;font-weight:600;
+  color:rgba(255,255,255,.6);
+  padding:.9rem 1.5rem;border-radius:10px;
+  text-decoration:none;border:1px solid rgba(255,255,255,.15);
+  transition:all .2s;
+}
+.cta-btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.cta-hindi{
+  font-family:var(--hindi);
+  font-size:.8rem;color:rgba(255,255,255,.25);
+  margin-top:1.5rem;display:block;
+}
+
+/* ─── FOOTER ──────────────────────────────────── */
+footer{
+  background:var(--ink);
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:4rem 4rem 2.5rem;
+}
+.footer-inner{max-width:1280px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;
+  gap:4rem;margin-bottom:4rem;
+  padding-bottom:3rem;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.footer-brand .logo{color:#fff;font-size:1.4rem}
+.footer-brand p{
+  font-size:.82rem;color:rgba(255,255,255,.35);
+  line-height:1.7;margin-top:.7rem;max-width:240px;
+}
+.footer-col h4{
+  font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);margin-bottom:1.1rem;
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.footer-col a{
+  color:rgba(255,255,255,.4);text-decoration:none;
+  font-size:.84rem;transition:color .2s;
+}
+.footer-col a:hover{color:rgba(255,255,255,.8)}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;
+}
+.footer-bottom p{font-size:.75rem;color:rgba(255,255,255,.2)}
+.footer-disclaimer{
+  font-size:.75rem;color:rgba(255,255,255,.18);
+  max-width:560px;line-height:1.6;margin-bottom:1.5rem;
+}
+
+/* ─── ANIMATIONS ─────────────────────────────── */
+.reveal{
+  opacity:0;transform:translateY(24px);
+  transition:opacity .7s ease, transform .7s ease;
+}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ─── RESPONSIVE ─────────────────────────────── */
+@media(max-width:1100px){
+  .hero-inner{grid-template-columns:1fr;gap:4rem;padding-top:9rem}
+  .hero-visual{display:none}
+  .hiw-layout{grid-template-columns:1fr}
+  .hiw-phone{display:none}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .stat{border-left:none;padding-left:0;border-top:1px solid rgba(255,255,255,.12);padding-top:2rem}
+  .stat:first-child,.stat:nth-child(2){border-top:none;padding-top:0}
+}
+@media(max-width:900px){
+  .nav{padding:1rem 1.5rem}
+  .nav.stuck{padding:.8rem 1.5rem}
+  .nav-links{display:none}
+  .section{padding:5rem 1.5rem}
+  .hero{padding:0 1.5rem}
+  .marquee-bar,.stats-band{padding-left:1.5rem;padding-right:1.5rem}
+  .feat-grid{grid-template-columns:1fr}
+  .feat-cell::after{display:none}
+  .schemes-grid{grid-template-columns:1fr}
+  .testi-grid{grid-template-columns:1fr}
+  .cta-section{padding:5rem 1.5rem}
+  footer{padding:3rem 1.5rem 2rem}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2.5rem}
+  .hero-meta{gap:1.5rem}
+}
+@media(max-width:600px){
+  .hero-h1{font-size:2.6rem}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .hero-actions{flex-direction:column;align-items:flex-start}
+  .cta-buttons{flex-direction:column;align-items:center}
+  .footer-top{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="landing.html" class="logo">
+      <span class="logo-flag">🇮🇳</span>Yojana<span class="logo-accent">Find</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#schemes">Schemes</a></li>
+      <li><a href="tracker.html">AI Tracker</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="tracker.html" class="nav-btn-ghost">AI Tracker</a>
+      <a href="index.html" class="nav-btn-fill">Find My Schemes →</a>
+    </div>
+  </div>
+  <div class="tricolor-line"></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <!-- Copy -->
+    <div class="hero-copy">
+      <p class="hero-kicker">150+ Schemes · 36 States · Free Forever</p>
+      <h1 class="hero-h1">
+        <span class="block">Every rupee</span>
+        <span class="block">the government</span>
+        <span class="block italic">owes you.</span>
+      </h1>
+      <p class="hero-sub">
+        Enter your profile once. Instantly discover <strong>every central and state scheme</strong> you qualify for — with step-by-step guides, documents needed, and direct apply links.
+      </p>
+      <div class="hero-actions">
+        <a href="index.html" class="cta-primary">
+          Find My Schemes
+          <span class="arrow">→</span>
+        </a>
+        <a href="#how-it-works" class="cta-secondary">
+          See how it works
+        </a>
+      </div>
+      <p class="hero-hindi">अपनी पात्र सरकारी योजनाएं तुरंत खोजें — निःशुल्क</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="meta-num">150<span class="sup">+</span></div>
+          <div class="meta-label">Active Schemes</div>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="hero-meta-item">
+          <div class="meta-num">36</div>
+          <div class="meta-label">States & UTs</div>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="hero-meta-item">
+          <div class="meta-num">₹0</div>
+          <div class="meta-label">Cost to Use</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual -->
+    <div class="hero-visual">
+      <div class="vis-bg-card"></div>
+
+      <!-- Floating cards -->
+      <div class="float-card fc-1">
+        <div class="fc-label">Total Benefits Found</div>
+        <div class="fc-value">
+          <div class="fc-dot saffron"></div>₹1.4L+ / yr
+        </div>
+        <div class="fc-sub">for UP, OBC farmer aged 28</div>
+      </div>
+      <div class="float-card fc-2">
+        <div class="fc-label">Last Updated</div>
+        <div class="fc-value">
+          <div class="fc-dot green"></div>March 2026
+        </div>
+      </div>
+
+      <!-- Main card -->
+      <div class="vis-main-card">
+        <div class="vmc-stripe"></div>
+        <div class="vmc-body">
+          <div class="vmc-header">
+            <div class="vmc-icon">🌾</div>
+            <div style="flex:1">
+              <div class="vmc-title">PM Kisan Samman Nidhi</div>
+              <div class="vmc-ministry">Ministry of Agriculture & Farmers Welfare</div>
+            </div>
+            <div class="vmc-badge">Popular</div>
+          </div>
+          <div class="vmc-benefit">💰 ₹6,000 per year — directly to your bank</div>
+          <p class="vmc-desc">Direct income support for all land-holding farmer families. Three installments of ₹2,000 transferred every 4 months via DBT — no middlemen, no office visits.</p>
+          <div class="vmc-tags">
+            <span class="vmc-tag">Farmer</span>
+            <span class="vmc-tag">18–70 yrs</span>
+            <span class="vmc-tag">All India</span>
+            <span class="vmc-tag">DBT Transfer</span>
+          </div>
+          <div class="vmc-progress">
+            <div class="progress-row">
+              <span class="progress-title">Instalment progress this year</span>
+              <span class="progress-pct">82%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill"></div>
+            </div>
+          </div>
+          <div class="vmc-footer">
+            <a href="https://pmkisan.gov.in" target="_blank" class="vmc-btn-primary">Apply Online →</a>
+            <button class="vmc-btn-ghost">How to Apply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticker -->
+      <div class="vis-ticker">
+        <div class="ticker-track">
+          <div class="ticker-chip">🏥 Ayushman <span class="amt">₹5L cover</span></div>
+          <div class="ticker-chip">🔨 Vishwakarma <span class="amt">₹15K toolkit</span></div>
+          <div class="ticker-chip">🎓 NSP Scholarship <span class="amt">₹50K/yr</span></div>
+          <div class="ticker-chip">🏢 MUDRA Loan <span class="amt">₹10L</span></div>
+          <div class="ticker-chip">🤱 Matru Vandana <span class="amt">₹5,000</span></div>
+          <div class="ticker-chip">🛡️ Suraksha Bima <span class="amt">₹2L @ ₹20/yr</span></div>
+          <!-- duplicate -->
+          <div class="ticker-chip">🏥 Ayushman <span class="amt">₹5L cover</span></div>
+          <div class="ticker-chip">🔨 Vishwakarma <span class="amt">₹15K toolkit</span></div>
+          <div class="ticker-chip">🎓 NSP Scholarship <span class="amt">₹50K/yr</span></div>
+          <div class="ticker-chip">🏢 MUDRA Loan <span class="amt">₹10L</span></div>
+          <div class="ticker-chip">🤱 Matru Vandana <span class="amt">₹5,000</span></div>
+          <div class="ticker-chip">🛡️ Suraksha Bima <span class="amt">₹2L @ ₹20/yr</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MARQUEE BAR -->
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span class="marquee-item">🌾 PM Kisan <span class="mi-amount">₹6,000/yr</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🏥 Ayushman Bharat <span class="mi-amount">₹5L health cover</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🏠 PM Awas Yojana <span class="mi-amount">₹2.67L subsidy</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🔨 PM Vishwakarma <span class="mi-amount">₹15K toolkit + ₹3L loan</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🎓 NSP Scholarship <span class="mi-amount">₹50K/yr</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🏢 MUDRA Loan <span class="mi-amount">₹10L no collateral</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🤱 PM Matru Vandana <span class="mi-amount">₹5,000</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🛡️ PM Suraksha Bima <span class="mi-amount">₹2L @ ₹20/yr</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">👧 Sukanya Samriddhi <span class="mi-amount">8.2% tax-free</span></span>
+    <span class="mi-sep">·</span>
+    <!-- duplicate -->
+    <span class="marquee-item">🌾 PM Kisan <span class="mi-amount">₹6,000/yr</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🏥 Ayushman Bharat <span class="mi-amount">₹5L health cover</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🏠 PM Awas Yojana <span class="mi-amount">₹2.67L subsidy</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🔨 PM Vishwakarma <span class="mi-amount">₹15K toolkit + ₹3L loan</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🎓 NSP Scholarship <span class="mi-amount">₹50K/yr</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🏢 MUDRA Loan <span class="mi-amount">₹10L no collateral</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🤱 PM Matru Vandana <span class="mi-amount">₹5,000</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">🛡️ PM Suraksha Bima <span class="mi-amount">₹2L @ ₹20/yr</span></span>
+    <span class="mi-sep">·</span>
+    <span class="marquee-item">👧 Sukanya Samriddhi <span class="mi-amount">8.2% tax-free</span></span>
+    <span class="mi-sep">·</span>
+  </div>
+</div>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div class="stat reveal">
+      <div class="stat-n">150<span class="sup">+</span></div>
+      <div class="stat-l">Government Schemes</div>
+      <div class="stat-desc">Central + state, updated monthly</div>
+    </div>
+    <div class="stat reveal reveal-delay-1">
+      <div class="stat-n">36</div>
+      <div class="stat-l">States & Union Territories</div>
+      <div class="stat-desc">Every state portal covered</div>
+    </div>
+    <div class="stat reveal reveal-delay-2">
+      <div class="stat-n">2M<span class="sup">+</span></div>
+      <div class="stat-l">Indians Helped</div>
+      <div class="stat-desc">Discovered benefits they didn't know about</div>
+    </div>
+    <div class="stat reveal reveal-delay-3">
+      <div class="stat-n">₹0</div>
+      <div class="stat-l">Cost to Use</div>
+      <div class="stat-desc">Free forever, no registration needed</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section features-section" id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow">Why YojanaFind</p>
+      <h2 class="section-h2">Built for every Indian,<br>not just the <em>tech-savvy</em></h2>
+      <p class="section-p">One platform for students, farmers, women, artisans, and senior citizens to find everything they're owed.</p>
+    </div>
+    <div class="feat-grid reveal">
+      <div class="feat-cell">
+        <div class="feat-ico fi-warm">🎯</div>
+        <h3 class="feat-h">Smart Eligibility Filter</h3>
+        <p class="feat-p">Enter age, income, category, state, and life situation. Matched against every scheme automatically — no browsing, no guessing.</p>
+        <span class="feat-tag">AI-Powered Matching</span>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-ico fi-earth">📋</div>
+        <h3 class="feat-h">Step-by-Step Application Guides</h3>
+        <p class="feat-p">Every scheme includes exactly where to apply, what documents to bring, and how long it takes. No middlemen required.</p>
+        <span class="feat-tag">Verified Information</span>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-ico fi-cool">🌐</div>
+        <h3 class="feat-h">English + हिंदी</h3>
+        <p class="feat-p">Switch languages with one tap. Every scheme name, description and guide available in both. Works on basic Android phones.</p>
+        <span class="feat-tag">Bilingual Interface</span>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-ico fi-warm">📡</div>
+        <h3 class="feat-h">Auto-Updated Every 7 Days</h3>
+        <p class="feat-p">AI crawler scans official government portals weekly using Firecrawl. New schemes discovered and added — you never miss a benefit.</p>
+        <span class="feat-tag">Always Current</span>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-ico fi-earth">🔒</div>
+        <h3 class="feat-h">Zero Data Collection</h3>
+        <p class="feat-p">No login, no Aadhaar, no phone number. Your profile is never stored. Enter details, get results, leave. Complete privacy.</p>
+        <span class="feat-tag">100% Private</span>
+      </div>
+      <div class="feat-cell">
+        <div class="feat-ico fi-cool">📶</div>
+        <h3 class="feat-h">Works Without Internet</h3>
+        <p class="feat-p">Full scheme data bundled locally. Check eligibility and read guides even without connectivity — built for rural India.</p>
+        <span class="feat-tag">Offline Ready</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section hiw-section" id="how-it-works">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow">How It Works</p>
+      <h2 class="section-h2">Profile to schemes<br>in <em>60 seconds</em></h2>
+    </div>
+    <div class="hiw-layout">
+      <div class="hiw-steps">
+        <div class="hiw-step reveal">
+          <div class="step-marker">
+            <div class="step-n">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <h3 class="step-h">Enter your profile</h3>
+            <p class="step-p">State, age, income bracket, caste category, employment status, and any life situations. Takes under 60 seconds to fill.</p>
+          </div>
+        </div>
+        <div class="hiw-step reveal reveal-delay-1">
+          <div class="step-marker">
+            <div class="step-n">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <h3 class="step-h">Algorithm matches your schemes</h3>
+            <p class="step-p">Cross-referenced against 150+ schemes from 50+ ministries. Every eligibility condition checked in milliseconds.</p>
+          </div>
+        </div>
+        <div class="hiw-step reveal reveal-delay-2">
+          <div class="step-marker">
+            <div class="step-n">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <h3 class="step-h">See every benefit you qualify for</h3>
+            <p class="step-p">Scheme cards show benefit amounts, eligibility reasoning, and direct links to official government portals.</p>
+          </div>
+        </div>
+        <div class="hiw-step reveal reveal-delay-3">
+          <div class="step-marker">
+            <div class="step-n">4</div>
+          </div>
+          <div class="step-content">
+            <h3 class="step-h">Apply with a complete guide</h3>
+            <p class="step-p">Each scheme has a numbered step-by-step process, required documents checklist, and official website link.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone mockup -->
+      <div class="hiw-phone reveal">
+        <div class="phone-bar">
+          <div class="phone-title">YojanaFind</div>
+          <div class="phone-badge">✅ 14 found</div>
+        </div>
+        <div class="phone-row">
+          <div class="pr-label">State · Age · Category</div>
+          <div class="pr-value">Uttar Pradesh · 26 · OBC</div>
+        </div>
+        <div class="phone-row">
+          <div class="pr-label">Employment · Income</div>
+          <div class="pr-value">Farmer · Below ₹2.5L/yr</div>
+        </div>
+        <div class="phone-cta">🔍 Find My Schemes</div>
+        <div class="phone-result pr-green">
+          <div class="pr-name">PM Kisan Samman Nidhi</div>
+          <div class="pr-amt g">₹6,000/year to your bank</div>
+        </div>
+        <div class="phone-result pr-blue">
+          <div class="pr-name">Ayushman Bharat PM-JAY</div>
+          <div class="pr-amt b">₹5 Lakh health cover</div>
+        </div>
+        <div class="phone-result pr-green">
+          <div class="pr-name">Kisan Credit Card</div>
+          <div class="pr-amt g">₹3L credit @ 4% interest</div>
+        </div>
+        <div class="phone-more">+ 11 more schemes →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEME PREVIEW -->
+<section class="section schemes-section" id="schemes">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow">Sample Schemes</p>
+      <h2 class="section-h2">A few of the <em>150+</em><br>schemes available</h2>
+    </div>
+    <div class="schemes-grid">
+      <div class="sc reveal">
+        <div class="sc-top-bar stb-green"></div>
+        <div class="sc-body">
+          <div class="sc-head">
+            <div class="sc-ico sci-g">🌾</div>
+            <div>
+              <div class="sc-title">PM Kisan Samman Nidhi</div>
+              <div class="sc-min">Ministry of Agriculture</div>
+            </div>
+          </div>
+          <p class="sc-desc">Direct income support for land-holding farmers. Three installments of ₹2,000 every 4 months directly to bank account — no middlemen.</p>
+          <div class="sc-amount">💰 ₹6,000 per year</div>
+          <div class="sc-chips">
+            <span class="sc-chip">Agriculture</span>
+            <span class="sc-chip">18–70 yrs</span>
+            <span class="sc-chip">All India</span>
+          </div>
+        </div>
+      </div>
+      <div class="sc reveal reveal-delay-1">
+        <div class="sc-top-bar stb-blue"></div>
+        <div class="sc-body">
+          <div class="sc-head">
+            <div class="sc-ico sci-b">🏥</div>
+            <div>
+              <div class="sc-title">Ayushman Bharat PM-JAY</div>
+              <div class="sc-min">Ministry of Health</div>
+            </div>
+          </div>
+          <p class="sc-desc">World's largest government health insurance. Cashless treatment at 27,000+ hospitals nationwide for 1,500+ medical procedures.</p>
+          <div class="sc-amount">💰 ₹5 Lakh/year health cover</div>
+          <div class="sc-chips">
+            <span class="sc-chip">Health</span>
+            <span class="sc-chip">All Ages</span>
+            <span class="sc-chip">BPL Families</span>
+          </div>
+        </div>
+      </div>
+      <div class="sc reveal reveal-delay-2">
+        <div class="sc-top-bar stb-saffron"></div>
+        <div class="sc-body">
+          <div class="sc-head">
+            <div class="sc-ico sci-s">🔨</div>
+            <div>
+              <div class="sc-title">PM Vishwakarma Yojana</div>
+              <div class="sc-min">Ministry of MSME</div>
+            </div>
+          </div>
+          <p class="sc-desc">Support for 18 traditional trades — carpenter, tailor, cobbler, goldsmith, barber. Free training, toolkit grant, and low-interest loan.</p>
+          <div class="sc-amount">💰 ₹15,000 toolkit + ₹3L @ 5%</div>
+          <div class="sc-chips">
+            <span class="sc-chip">Artisan</span>
+            <span class="sc-chip">NEW 2025</span>
+            <span class="sc-chip">18–60 yrs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="view-all-wrap reveal">
+      <a href="index.html" class="view-all">View All 150+ Schemes →</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testi-section">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="eyebrow">Real Stories</p>
+      <h2 class="section-h2">Indians who claimed<br>what was <em>rightfully theirs</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="tc reveal">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-q">"</div>
+        <p class="tc-text">I had no idea I qualified for PM Kisan and Ayushman together. Found 8 schemes in minutes. My family gets ₹6,000/year plus free hospital treatment now.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">👨‍🌾</div>
+          <div>
+            <div class="tc-name">Ramesh Kumar</div>
+            <div class="tc-location">Farmer · Varanasi, UP</div>
+          </div>
+        </div>
+        <div class="tc-earned">✅ ₹6K PM Kisan + ₹5L Ayushman cover</div>
+      </div>
+      <div class="tc reveal reveal-delay-1">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-q">"</div>
+        <p class="tc-text">As a widow with two children I was struggling. This site found the widow pension, Matru Vandana, and Sukanya account for my daughter. Changed our life.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">👩</div>
+          <div>
+            <div class="tc-name">Priya Devi</div>
+            <div class="tc-location">Single Mother · Patna, Bihar</div>
+          </div>
+        </div>
+        <div class="tc-earned">✅ 4 schemes · ₹8,200/month income support</div>
+      </div>
+      <div class="tc reveal reveal-delay-2">
+        <div class="tc-stars">★★★★★</div>
+        <div class="tc-q">"</div>
+        <p class="tc-text">Didn't know about Vishwakarma Yojana. Got ₹15,000 toolkit grant and ₹1L loan at 5%. Started my own carpentry workshop. Hindi support was very helpful.</p>
+        <div class="tc-author">
+          <div class="tc-avatar">🔨</div>
+          <div>
+            <div class="tc-name">Suresh Vishwakarma</div>
+            <div class="tc-location">Artisan · Jaipur, Rajasthan</div>
+          </div>
+        </div>
+        <div class="tc-earned">✅ PM Vishwakarma · ₹15K + ₹1L loan @ 5%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <span class="cta-eyebrow">Take Action Today</span>
+    <h2 class="cta-h2">Your benefits are<br><em>waiting for you</em></h2>
+    <p class="cta-p">Thousands of crores sit unclaimed each year because people don't know they qualify. It takes 60 seconds to find out — completely free.</p>
+    <div class="cta-buttons">
+      <a href="index.html" class="cta-btn-main">🔍 Find My Schemes — Free</a>
+      <a href="tracker.html" class="cta-btn-ghost">📡 AI Tracker Dashboard</a>
+    </div>
+    <span class="cta-hindi">अभी शुरू करें — कोई लॉगिन नहीं, कोई शुल्क नहीं</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="landing.html" class="logo">🇮🇳 Yojana<span class="logo-accent">Find</span></a>
+        <p>India's free, independent government scheme discovery platform. No login, no data storage, no middlemen.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="index.html">Scheme Finder</a></li>
+          <li><a href="tracker.html">AI Tracker</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="index.html">Agriculture</a></li>
+          <li><a href="index.html">Education</a></li>
+          <li><a href="index.html">Women</a></li>
+          <li><a href="index.html">Health</a></li>
+          <li><a href="index.html">Housing</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Data Sources</h4>
+        <ul>
+          <li><a href="https://india.gov.in" target="_blank">india.gov.in</a></li>
+          <li><a href="https://myscheme.gov.in" target="_blank">myscheme.gov.in</a></li>
+          <li><a href="https://pib.gov.in" target="_blank">pib.gov.in</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-disclaimer">⚠️ YojanaFind is an independent information platform. Always verify scheme details on official government websites before applying. Last updated March 2026.</p>
+    <div class="footer-bottom">
+      <p>© 2026 YojanaFind · Built for India 🇮🇳 · MIT License</p>
+      <p>Vercel · Supabase · Claude AI</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAV STICKY ──────────────────────────────────────────
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('stuck', window.scrollY > 60);
+}, {passive:true});
+
+// ── SCROLL REVEAL ────────────────────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

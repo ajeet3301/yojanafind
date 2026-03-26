@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YojanaFind — Find Your Government Schemes</title>
+<meta name="description" content="Find every Indian government scheme you qualify for. Free, instant, no login.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<!-- ADSENSE: Paste your AdSense <script> tag here when approved -->
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* ── TOKENS ── */
+:root{
+  --paper:    #FAF7F2;
+  --paper2:   #F2EDE4;
+  --paper3:   #E8DFD2;
+  --surface:  #FFFFFF;
+  --ink:      #1C1410;
+  --ink2:     #3D2E22;
+  --muted:    #7A6555;
+  --muted2:   #A08C7A;
+  --saffron:  #E8601C;
+  --saffron2: #F28240;
+  --green:    #1B6B3A;
+  --green2:   #2D9B55;
+  --green-bg: #F0FDF6;
+  --green-bd: #BBF7D0;
+  --blue:     #1D4ED8;
+  --blue-bg:  #EFF6FF;
+  --navy:     #1C1410;
+  --border:   rgba(60,40,20,.1);
+  --border2:  rgba(60,40,20,.18);
+  --serif:    'Cormorant Garamond', Georgia, serif;
+  --sans:     'Plus Jakarta Sans', system-ui, sans-serif;
+  --hindi:    'Noto Sans Devanagari', sans-serif;
+  --s1:       0 1px 4px rgba(60,40,20,.08);
+  --s2:       0 4px 16px rgba(60,40,20,.08);
+  --s3:       0 12px 40px rgba(60,40,20,.12);
+}
+
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  font-size:15px;line-height:1.6;
+}
+body.hindi{font-family:var(--hindi),var(--sans)}
+
+/* ── HEADER ── */
+header{
+  background:var(--ink);
+  position:sticky;top:0;z-index:200;
+}
+.hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 2.5rem;max-width:1200px;margin:0 auto;
+  gap:1rem;flex-wrap:wrap;
+}
+.hdr-brand{text-decoration:none;display:flex;flex-direction:column;gap:1px}
+.brand-nm{
+  font-family:var(--serif);font-size:1.3rem;font-weight:700;
+  color:#fff;letter-spacing:-.01em;line-height:1;
+}
+.brand-nm em{font-style:normal;color:var(--saffron)}
+.brand-sub{font-size:.65rem;color:rgba(255,255,255,.3);font-weight:400;letter-spacing:.03em}
+.hdr-right{display:flex;align-items:center;gap:1rem}
+.hdr-pills{display:flex;gap:.5rem}
+.hpill{
+  font-size:.68rem;font-weight:600;color:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:50px;padding:.28rem .7rem;white-space:nowrap;
+}
+.lang-sw{
+  display:flex;align-items:center;
+  background:rgba(255,255,255,.08);
+  border-radius:50px;padding:3px;gap:2px;
+}
+.lbtn{
+  background:transparent;border:none;
+  color:rgba(255,255,255,.4);
+  padding:.25rem .7rem;border-radius:50px;
+  font-size:.73rem;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s;
+}
+.lbtn.on{background:var(--saffron);color:#fff}
+.tricolor{height:2.5px;background:linear-gradient(90deg,var(--saffron) 33.33%,#fff 33.33% 66.66%,var(--green) 66.66%)}
+
+/* ── AD WRAPPER ── */
+.ad-wrap{display:flex;justify-content:center;padding:.8rem 2rem}
+.ad-box{
+  display:flex;align-items:center;justify-content:center;
+  background:var(--paper2);border:1.5px dashed var(--border2);
+  color:var(--muted2);font-size:.72rem;border-radius:10px;
+  padding:.55rem 2rem;min-height:52px;letter-spacing:.03em;
+}
+
+/* ── FILTER HERO ── */
+.filter-hero{background:var(--ink);padding:3rem 2.5rem 2.5rem}
+.fh-inner{max-width:900px;margin:0 auto}
+.fh-head{text-align:center;margin-bottom:2rem}
+.fh-h1{
+  font-family:var(--serif);
+  font-size:clamp(1.7rem,3vw,2.6rem);
+  font-weight:700;color:#fff;
+  line-height:1.1;letter-spacing:-.02em;
+  margin-bottom:.5rem;
+}
+.fh-sub{color:rgba(255,255,255,.4);font-size:.875rem;line-height:1.65}
+
+/* Form */
+.form-wrap{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:18px;padding:1.75rem;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
+}
+.fg{display:flex;flex-direction:column;gap:.35rem}
+.fg-full{grid-column:1/-1}
+.fg label{
+  font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);
+}
+.fg input,
+.fg select{
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;
+  padding:.62rem .9rem;
+  color:#fff;font-size:.875rem;font-family:inherit;
+  outline:none;transition:all .2s;
+  -webkit-appearance:none;
+}
+.fg select option{background:var(--ink);color:#fff}
+.fg input::placeholder{color:rgba(255,255,255,.25)}
+.fg input:focus,.fg select:focus{
+  border-color:rgba(232,96,28,.5);
+  background:rgba(255,255,255,.1);
+  box-shadow:0 0 0 3px rgba(232,96,28,.1);
+}
+
+/* Pills */
+.pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.2rem}
+.pill{
+  display:flex;align-items:center;gap:.35rem;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:50px;padding:.35rem .8rem;
+  font-size:.77rem;color:rgba(255,255,255,.55);
+  cursor:pointer;user-select:none;transition:all .2s;
+}
+.pill:hover{background:rgba(255,255,255,.08)}
+.pill input{display:none}
+.pill:has(input:checked){
+  background:rgba(232,96,28,.16);
+  border-color:rgba(232,96,28,.4);
+  color:#fff;
+}
+
+/* CTA row */
+.cta-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:.8rem;padding-top:.4rem;
+}
+.btn-find{
+  background:var(--saffron);color:#fff;border:none;
+  padding:.82rem 2.2rem;border-radius:50px;
+  font-size:.95rem;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:all .25s;
+  display:inline-flex;align-items:center;gap:.5rem;
+  box-shadow:0 4px 16px rgba(232,96,28,.35);
+  letter-spacing:.01em;
+}
+.btn-find:hover{background:var(--saffron2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,96,28,.45)}
+.btn-find:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-reset{
+  background:transparent;border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.45);
+  padding:.82rem 1.4rem;border-radius:50px;
+  font-size:.875rem;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.btn-reset:hover{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
+
+/* Loader */
+.dots{display:none;align-items:center;gap:3px}
+.d{width:5px;height:5px;background:#fff;border-radius:50%;animation:dp .7s infinite}
+.d:nth-child(2){animation-delay:.12s}
+.d:nth-child(3){animation-delay:.24s}
+@keyframes dp{0%,80%,100%{transform:scale(1);opacity:.5}40%{transform:scale(1.5);opacity:1}}
+
+/* ── RESULTS ── */
+.results{padding:2rem 2.5rem;max-width:1200px;margin:0 auto}
+.results-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.1rem;flex-wrap:wrap;gap:.7rem;
+}
+.res-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--green-bg);border:1px solid var(--green-bd);
+  color:var(--green);font-size:.83rem;font-weight:700;
+  padding:.42rem 1rem;border-radius:50px;
+}
+.share-btn{
+  background:transparent;border:1px solid var(--border2);
+  color:var(--muted);font-size:.77rem;font-weight:600;
+  padding:.38rem .85rem;border-radius:50px;
+  cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.share-btn:hover{border-color:var(--saffron);color:var(--saffron)}
+
+/* Cat tabs */
+.cat-bar{
+  display:flex;gap:.3rem;overflow-x:auto;
+  padding-bottom:.4rem;margin-bottom:1.4rem;
+  scrollbar-width:none;
+}
+.cat-bar::-webkit-scrollbar{display:none}
+.ctab{
+  background:var(--surface);border:1px solid var(--border2);
+  color:var(--muted);font-size:.76rem;font-weight:600;
+  padding:.35rem .85rem;border-radius:50px;
+  cursor:pointer;white-space:nowrap;font-family:inherit;
+  transition:all .2s;box-shadow:var(--s1);
+}
+.ctab:hover{border-color:var(--saffron);color:var(--saffron)}
+.ctab.on{background:var(--saffron);border-color:var(--saffron);color:#fff;box-shadow:0 3px 10px rgba(232,96,28,.2)}
+
+/* Scheme grid */
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.scard{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;
+  box-shadow:var(--s1);transition:all .3s;
+  animation:cIn .35s ease both;opacity:0;
+  position:relative;
+}
+@keyframes cIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.scard:hover{border-color:rgba(232,96,28,.2);box-shadow:var(--s3);transform:translateY(-2px)}
+
+/* Scheme card top accent */
+.scard-bar{height:2px}
+.sbar-s{background:linear-gradient(90deg,var(--saffron),#F7B731)}
+.sbar-g{background:linear-gradient(90deg,var(--green),var(--green2))}
+.sbar-b{background:linear-gradient(90deg,var(--blue),#3B82F6)}
+
+.scard-head{display:flex;align-items:flex-start;gap:.8rem;padding:1.1rem 1.2rem .65rem}
+.scard-ico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.si-s{background:#FFF2E8;border:1px solid #FECBA8}
+.si-g{background:#F0FDF4;border:1px solid #BBF7D0}
+.si-b{background:#EFF6FF;border:1px solid #BFDBFE}
+.si-p{background:#FDF4FF;border:1px solid #E9D5FF}
+.scard-nm{font-family:var(--serif);font-weight:700;font-size:.97rem;color:var(--ink);line-height:1.3;margin-bottom:.1rem}
+.scard-min{font-size:.68rem;color:var(--muted2);font-weight:500}
+.sbadge{
+  position:absolute;top:.7rem;right:.7rem;
+  font-size:.6rem;font-weight:800;padding:.16rem .5rem;
+  border-radius:50px;letter-spacing:.04em;text-transform:uppercase;
+}
+.sb-new{background:var(--saffron);color:#fff}
+.sb-pop{background:var(--blue);color:#fff}
+.scard-body{padding:0 1.2rem .8rem}
+.scard-desc{
+  font-size:.81rem;color:var(--muted);line-height:1.65;margin-bottom:.75rem;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.scard-chips{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.7rem}
+.schip{
+  font-size:.66rem;font-weight:600;color:var(--muted2);
+  background:var(--paper2);border:1px solid var(--border);
+  border-radius:50px;padding:.14rem .52rem;
+}
+.scard-amt{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--green-bg);border:1px solid var(--green-bd);
+  border-radius:8px;padding:.45rem .75rem;
+  font-size:.79rem;font-weight:700;color:var(--green);
+}
+.scard-foot{
+  display:flex;gap:.55rem;
+  padding:.75rem 1.2rem 1.1rem;
+  border-top:1px solid var(--border);
+}
+.sbtn-main{
+  flex:1;background:var(--blue);color:#fff;
+  border:none;border-radius:8px;padding:.52rem;
+  font-size:.78rem;font-weight:700;cursor:pointer;
+  text-decoration:none;display:flex;align-items:center;justify-content:center;
+  font-family:inherit;transition:all .2s;
+}
+.sbtn-main:hover{background:#1e40af;transform:translateY(-1px)}
+.sbtn-ghost{
+  background:transparent;border:1px solid var(--border2);
+  color:var(--muted);border-radius:8px;padding:.52rem .9rem;
+  font-size:.78rem;font-weight:600;cursor:pointer;
+  font-family:inherit;transition:all .2s;white-space:nowrap;
+}
+.sbtn-ghost:hover{border-color:var(--saffron);color:var(--saffron)}
+
+/* No results */
+.no-res{
+  grid-column:1/-1;text-align:center;
+  padding:4rem 2rem;color:var(--muted);
+}
+.no-res h3{font-family:var(--serif);font-size:1.2rem;color:var(--ink);margin-bottom:.4rem}
+
+/* ── MODAL ── */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(28,20,16,.55);
+  backdrop-filter:blur(6px);
+  z-index:500;display:flex;align-items:center;justify-content:center;
+  padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.overlay.on{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border-radius:20px;
+  max-width:560px;width:100%;max-height:88vh;overflow-y:auto;
+  position:relative;
+  transform:translateY(12px) scale(.99);transition:transform .3s;
+  box-shadow:0 40px 80px rgba(28,20,16,.2),0 0 0 1px rgba(60,40,20,.1);
+}
+.overlay.on .modal{transform:none}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.modal-close{
+  position:absolute;top:.85rem;right:.85rem;
+  background:var(--paper2);border:1px solid var(--border2);
+  color:var(--muted);width:28px;height:28px;border-radius:50%;
+  cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;z-index:5;
+}
+.modal-close:hover{background:var(--saffron);color:#fff;border-color:var(--saffron)}
+.modal-bar{height:2.5px}
+.modal-head{
+  display:flex;gap:.9rem;align-items:flex-start;
+  padding:1.4rem 1.4rem 1rem;border-bottom:1px solid var(--border);
+}
+.modal-ico{
+  width:48px;height:48px;border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;flex-shrink:0;
+}
+.modal-nm{font-family:var(--serif);font-size:1.25rem;font-weight:700;color:var(--ink);line-height:1.2}
+.modal-min{font-size:.72rem;color:var(--muted2);margin-top:.15rem}
+.modal-body{padding:1.2rem 1.4rem 1.5rem}
+.modal-desc{font-size:.86rem;color:var(--muted);line-height:1.7;margin-bottom:1.1rem}
+.modal-benefit{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--green-bg);border:1px solid var(--green-bd);
+  border-radius:10px;padding:.8rem 1rem;
+  font-size:.88rem;font-weight:700;color:var(--green);
+  margin-bottom:1.4rem;
+}
+.modal-sec{
+  font-weight:700;font-size:.82rem;color:var(--ink);
+  margin:1.2rem 0 .75rem;display:flex;align-items:center;gap:.4rem;
+}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:.65rem}
+.steps-list li{display:flex;gap:.8rem;align-items:flex-start;font-size:.84rem;color:var(--muted);line-height:1.6}
+.sn{
+  width:22px;height:22px;border-radius:7px;
+  background:var(--saffron);color:#fff;
+  font-size:.68rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.docs-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.doc-chip{
+  background:var(--paper2);border:1px solid var(--border2);
+  color:var(--muted);font-size:.73rem;
+  padding:.26rem .72rem;border-radius:50px;
+}
+.modal-apply-btn{
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+  background:var(--blue);color:#fff;border:none;
+  border-radius:10px;padding:.88rem;
+  font-size:.9rem;font-weight:700;text-decoration:none;
+  cursor:pointer;font-family:var(--serif);
+  margin-top:1.2rem;width:100%;transition:all .2s;
+}
+.modal-apply-btn:hover{background:#1e40af;transform:translateY(-1px);box-shadow:0 5px 18px rgba(29,78,216,.25)}
+
+/* ── SUGGEST ── */
+.suggest-wrap{
+  background:var(--paper2);border-top:1px solid var(--border);
+  padding:2rem 2.5rem;
+}
+.suggest-inner{max-width:520px;margin:0 auto;text-align:center}
+.suggest-inner h3{font-family:var(--serif);font-size:1.1rem;font-weight:700;margin-bottom:.25rem;color:var(--ink)}
+.suggest-inner p{font-size:.83rem;color:var(--muted);margin-bottom:1rem}
+.sug-row{display:flex;gap:.55rem}
+.sug-in{
+  flex:1;border:1px solid var(--border2);border-radius:10px;
+  padding:.58rem .9rem;font-size:.84rem;font-family:inherit;
+  background:var(--surface);color:var(--ink);outline:none;transition:border-color .2s;
+}
+.sug-in:focus{border-color:var(--blue)}
+.sug-in::placeholder{color:var(--muted2)}
+.sug-btn{
+  background:var(--saffron);color:#fff;border:none;
+  border-radius:10px;padding:.58rem 1.2rem;
+  font-size:.84rem;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:all .2s;white-space:nowrap;
+}
+.sug-btn:hover{background:var(--saffron2)}
+.sug-ok{color:var(--green);font-size:.84rem;font-weight:700;margin-top:.65rem}
+
+/* ── FOOTER ── */
+.app-footer{
+  background:var(--ink);padding:1.4rem 2.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:.7rem;
+}
+.app-footer p,.app-footer a{font-size:.73rem;color:rgba(255,255,255,.25)}
+.app-footer a{text-decoration:none;transition:color .2s}
+.app-footer a:hover{color:var(--saffron)}
+.footer-srcs{display:flex;gap:1.1rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hdr{padding:.75rem 1.2rem}
+  .hdr-pills{display:none}
+  .form-wrap{grid-template-columns:1fr 1fr;padding:1.2rem}
+  .sgrid{grid-template-columns:1fr}
+  .results,.suggest-wrap,.ad-wrap{padding:1.4rem 1.2rem}
+  .filter-hero{padding:2rem 1.2rem 1.8rem}
+}
+@media(max-width:480px){
+  .form-wrap{grid-template-columns:1fr}
+  .cta-row{flex-direction:column;width:100%}
+  .btn-find,.btn-reset{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="hdr">
+    <a href="landing.html" class="hdr-brand">
+      <span class="brand-nm">Yojana<em>Find</em></span>
+      <span class="brand-sub">India's Free Scheme Finder</span>
+    </a>
+    <div class="hdr-right">
+      <div class="hdr-pills">
+        <div class="hpill">📋 150+ Schemes</div>
+        <div class="hpill">🗺️ 36 States</div>
+        <div class="hpill">🔒 No Login</div>
+      </div>
+      <div class="lang-sw">
+        <button class="lbtn on" id="btn-en" onclick="setLang('en')">EN</button>
+        <button class="lbtn" id="btn-hi" onclick="setLang('hi')">हि</button>
+      </div>
+    </div>
+  </div>
+  <div class="tricolor"></div>
+</header>
+
+<!-- AD SLOT 1 — Replace with AdSense when approved -->
+<div class="ad-wrap">
+  <!-- ADSENSE: Replace div below with your AdSense code -->
+  <div class="ad-box">Advertisement · 728×90</div>
+</div>
+
+<!-- FILTER HERO -->
+<div class="filter-hero">
+  <div class="fh-inner">
+    <div class="fh-head">
+      <h1 class="fh-h1" id="fh1">Find Schemes You Qualify For</h1>
+      <p class="fh-sub" id="fh2">Fill in your profile — instantly see every eligible scheme with step-by-step guides.</p>
+    </div>
+    <div class="form-wrap">
+      <!-- Row 1 -->
+      <div class="fg">
+        <label id="l-state">📍 State / UT</label>
+        <select id="f-state">
+          <option value="">All States</option>
+          <option>Andhra Pradesh</option><option>Arunachal Pradesh</option><option>Assam</option>
+          <option>Bihar</option><option>Chhattisgarh</option><option>Goa</option>
+          <option>Gujarat</option><option>Haryana</option><option>Himachal Pradesh</option>
+          <option>Jharkhand</option><option>Karnataka</option><option>Kerala</option>
+          <option>Madhya Pradesh</option><option>Maharashtra</option><option>Manipur</option>
+          <option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+          <option>Odisha</option><option>Punjab</option><option>Rajasthan</option>
+          <option>Sikkim</option><option>Tamil Nadu</option><option>Telangana</option>
+          <option>Tripura</option><option>Uttar Pradesh</option><option>Uttarakhand</option>
+          <option>West Bengal</option>
+          <optgroup label="Union Territories">
+            <option>Andaman &amp; Nicobar</option><option>Chandigarh</option>
+            <option>Dadra &amp; Nagar Haveli</option><option>Delhi</option>
+            <option>Jammu &amp; Kashmir</option><option>Ladakh</option><option>Puducherry</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="fg">
+        <label id="l-age">🎂 Age</label>
+        <input type="number" id="f-age" placeholder="e.g. 28" min="0" max="120">
+      </div>
+      <div class="fg">
+        <label id="l-gender">👤 Gender</label>
+        <select id="f-gender">
+          <option value="">Any</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <!-- Row 2 -->
+      <div class="fg">
+        <label id="l-cat">🏷️ Category</label>
+        <select id="f-cat">
+          <option value="">All Categories</option>
+          <option value="general">General</option>
+          <option value="obc">OBC</option>
+          <option value="sc">SC</option>
+          <option value="st">ST</option>
+          <option value="ews">EWS</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label id="l-inc">💰 Annual Family Income</label>
+        <select id="f-inc">
+          <option value="">Any Income</option>
+          <option value="0">Below ₹1 Lakh (BPL)</option>
+          <option value="1">₹1 – ₹2.5 Lakh</option>
+          <option value="2">₹2.5 – ₹5 Lakh</option>
+          <option value="3">₹5 – ₹8 Lakh</option>
+          <option value="4">₹8 – ₹12 Lakh</option>
+          <option value="5">Above ₹12 Lakh</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label id="l-emp">💼 Employment Status</label>
+        <select id="f-emp">
+          <option value="">Any</option>
+          <option value="student">Student</option>
+          <option value="unemployed">Unemployed</option>
+          <option value="farmer">Farmer</option>
+          <option value="self-employed">Self-Employed</option>
+          <option value="salaried-private">Salaried (Private)</option>
+          <option value="govt">Govt Employee</option>
+          <option value="daily-wage">Daily Wage Worker</option>
+          <option value="artisan">Artisan / Craftsman</option>
+        </select>
+      </div>
+      <!-- Life Situation -->
+      <div class="fg fg-full">
+        <label id="l-sit">🌟 Life Situation
+          <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.25)"> — select all that apply</span>
+        </label>
+        <div class="pills" id="pills">
+          <label class="pill"><input type="checkbox" value="pregnant"> 🤰 Pregnant / New Mother</label>
+          <label class="pill"><input type="checkbox" value="disabled"> ♿ Differently Abled</label>
+          <label class="pill"><input type="checkbox" value="bpl"> 🏠 BPL Card Holder</label>
+          <label class="pill"><input type="checkbox" value="minority"> ☪️ Minority Community</label>
+          <label class="pill"><input type="checkbox" value="widow"> 🙏 Widow / Single Parent</label>
+          <label class="pill"><input type="checkbox" value="rural"> 🌾 Rural / Village Area</label>
+          <label class="pill"><input type="checkbox" value="senior"> 👴 Senior Citizen 60+</label>
+        </div>
+      </div>
+      <!-- Submit -->
+      <div class="fg fg-full cta-row">
+        <button class="btn-find" id="find-btn" onclick="doFind()">
+          <span id="find-txt">🔍 Find My Schemes</span>
+          <span class="dots" id="dots"><span class="d"></span><span class="d"></span><span class="d"></span></span>
+        </button>
+        <button class="btn-reset" onclick="doReset()" id="reset-btn">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AD SLOT 2 (mid — shown after results) -->
+<div class="ad-wrap" id="ad2" style="display:none">
+  <!-- ADSENSE: Replace with your ad unit code -->
+  <div class="ad-box">Advertisement · 336×280</div>
+</div>
+
+<!-- RESULTS -->
+<div class="results" id="res-section" style="display:none">
+  <div class="results-top">
+    <div class="res-badge" id="res-count">0 schemes found</div>
+    <button class="share-btn" onclick="doShare()">📤 Share Results</button>
+  </div>
+  <div class="cat-bar">
+    <button class="ctab on" data-c="all" onclick="fCat('all')">All</button>
+    <button class="ctab" data-c="education" onclick="fCat('education')">🎓 Education</button>
+    <button class="ctab" data-c="agriculture" onclick="fCat('agriculture')">🌾 Agriculture</button>
+    <button class="ctab" data-c="housing" onclick="fCat('housing')">🏠 Housing</button>
+    <button class="ctab" data-c="women" onclick="fCat('women')">👩 Women</button>
+    <button class="ctab" data-c="employment" onclick="fCat('employment')">💼 Employment</button>
+    <button class="ctab" data-c="health" onclick="fCat('health')">🏥 Health</button>
+    <button class="ctab" data-c="social" onclick="fCat('social')">👴 Social Security</button>
+    <button class="ctab" data-c="business" onclick="fCat('business')">🏢 Business</button>
+  </div>
+  <div class="sgrid" id="sgrid"></div>
+</div>
+
+<!-- AD SLOT 3 (bottom) -->
+<div class="ad-wrap" id="ad3" style="display:none">
+  <!-- ADSENSE: Replace with your ad unit code -->
+  <div class="ad-box">Advertisement · 728×90</div>
+</div>
+
+<!-- SUGGEST -->
+<div class="suggest-wrap" id="sug-wrap" style="display:none">
+  <div class="suggest-inner">
+    <h3 id="sug-title">💡 Know a scheme we missed?</h3>
+    <p id="sug-sub">Help us improve YojanaFind for all Indians</p>
+    <div class="sug-row">
+      <input class="sug-in" id="sug-in" placeholder="Describe the scheme or paste the official link...">
+      <button class="sug-btn" onclick="doSuggest()" id="sug-btn">Submit</button>
+    </div>
+    <div class="sug-ok" id="sug-ok" style="display:none">✅ Thank you! We'll review and add it soon.</div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-inner"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+  <p>© 2026 YojanaFind · Independent information platform · Always verify on official government sites</p>
+  <div class="footer-srcs">
+    <a href="https://india.gov.in" target="_blank">india.gov.in</a>
+    <a href="https://myscheme.gov.in" target="_blank">myscheme.gov.in</a>
+    <a href="https://pib.gov.in" target="_blank">pib.gov.in</a>
+  </div>
+</footer>
+
+<script src="schemes-data.js"></script>
+<script src="supabase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
