@@ -1,119 +1,94 @@
-# 🇮🇳 YojanaFind — India's AI Government Scheme Finder
-
-> **Find every Indian government scheme you qualify for — instantly, free, no login required.**
-
-![YojanaFind Banner](https://via.placeholder.com/1200x400/0D1B2A/FF6B00?text=YojanaFind+%E2%80%94+India%27s+Free+Scheme+Finder)
-
-**Live Demo:** [https://yojanafind.vercel.app](https://yojanafind.vercel.app) *(replace after deployment)*
+# YojanaFind — Complete Setup & Money Guide
+## Everything step by step. No confusion.
 
 ---
 
-## 📋 What is YojanaFind?
+## STEP 1 — PUT ALL FILES IN ONE FOLDER
 
-YojanaFind helps every Indian discover the government schemes they are eligible for — from students to farmers, women to senior citizens. Enter your profile once, and instantly see all central + state schemes with:
-
-- ✅ Step-by-step application guides
-- ✅ Required documents list
-- ✅ Official government website links
-- ✅ English + Hindi language support
-- ✅ AI Tracker that auto-discovers new schemes every 7 days
-
----
-
-## ✨ Features
-
-| Feature | Description |
-|---------|-------------|
-| 🔍 Smart Filter | Filter by age, income, category, state, employment, life situation |
-| 🎯 18+ Schemes | Complete data: PMKISAN, Ayushman, MUDRA, Vishwakarma, PMKVY... |
-| 📋 Modal Guide | Step-by-step apply process + documents for each scheme |
-| 🌐 Bilingual | Full English + Hindi (Noto Sans Devanagari) support |
-| 🤖 AI Tracker | Auto-crawls govt portals every 7 days via Firecrawl + Claude AI |
-| 💬 AI Chat | Claude-powered chatbot answers scheme queries |
-| 📱 Mobile-First | Works on ₹5,000 Android phones with poor connectivity |
-| 🔌 Offline Mode | Fallback to local data when internet is unavailable |
-| 📊 Analytics | Discovery trends, category charts, crawl logs |
-| 📧 Notifications | Email alerts when new schemes are discovered |
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Pure HTML + CSS + Vanilla JS (landing.html, index.html, tracker.html) |
-| 3D/Animation | Three.js (globe) + GSAP + ScrollTrigger |
-| Charts | Chart.js v4 |
-| Database | Supabase (PostgreSQL, free tier) |
-| AI | Claude API (Anthropic) for scheme Q&A |
-| Web Scraping | Firecrawl API (for AI Tracker) |
-| Fonts | Baloo 2 + Noto Sans Devanagari + DM Sans (Google Fonts) |
-| Hosting | Vercel (free) |
-| Version Control | GitHub |
-
-**Total cost: ₹0/month** on free tiers.
-
----
-
-## 📁 File Structure
-
+Your folder should look like this:
 ```
 yojanafind/
-├── landing.html        ← Cinematic 3D landing page (Three.js globe)
-├── index.html          ← Main scheme finder app
-├── tracker.html        ← AI Tracker dashboard
-├── style.css           ← All styles for index.html
-├── app.js              ← Filter logic, rendering, modal, bilingual
-├── schemes-data.js     ← 18 schemes — offline fallback data
-├── supabase-config.js  ← Supabase client setup
-├── vercel.json         ← Vercel deployment config
-├── .gitignore          ← Git ignore rules
-└── README.md           ← This file
+├── landing.html       ← Your homepage
+├── index.html         ← The scheme finder app  
+├── tracker.html       ← AI tracker dashboard
+├── app.js
+├── schemes-data.js
+├── supabase-config.js
+├── crawler.js         ← Backend (deploy separately)
+├── package.json
+├── vercel.json
+├── .gitignore
+└── .env.example
 ```
 
 ---
 
-## 🚀 Quick Start (Local)
+## STEP 2 — UPLOAD TO GITHUB (5 minutes)
 
-No build step required. Just open in browser:
+Install Git from: https://git-scm.com/downloads
+
+Open a terminal/command prompt inside your yojanafind folder:
 
 ```bash
-# Clone the repo
-git clone https://github.com/YOUR_USERNAME/yojanafind.git
-cd yojanafind
-
-# Open in browser (any of these)
-open landing.html        # macOS
-start landing.html       # Windows
-xdg-open landing.html    # Linux
-
-# Or use VS Code Live Server (recommended)
-code .
-# Right-click landing.html → "Open with Live Server"
+git init
+git add .
+git commit -m "YojanaFind launch"
 ```
 
-The app works completely offline using the bundled `schemes-data.js` fallback.
+Go to github.com → click "+" at top right → "New repository"
+- Name: yojanafind
+- Visibility: Public
+- Do NOT add README or .gitignore (you have them already)
+- Click "Create repository"
+
+Copy the commands GitHub shows you and run them. They look like:
+```bash
+git remote add origin https://github.com/YOUR_NAME/yojanafind.git
+git branch -M main
+git push -u origin main
+```
+
+✅ Your code is now on GitHub.
 
 ---
 
-## 🗄️ Supabase Setup (Optional — for live database)
+## STEP 3 — DEPLOY ON VERCEL (3 minutes, FREE)
 
-### Step 1: Create Supabase Project
-1. Go to [supabase.com](https://supabase.com) → Sign up free
-2. Click **New Project** → Name it `yojanafind`
-3. Choose a region close to India (Mumbai)
+1. Go to vercel.com
+2. Click "Sign Up" → choose "Continue with GitHub"
+3. Click "Add New Project"
+4. Find "yojanafind" in the list → click "Import"
+5. Framework Preset: leave as "Other"
+6. Click "Deploy"
+7. Wait 30-60 seconds
 
-### Step 2: Run Schema SQL
-Go to **SQL Editor** in Supabase and run:
+✅ Your website is LIVE. Vercel gives you a URL like:
+   https://yojanafind.vercel.app
+
+CUSTOM DOMAIN (optional):
+- In Vercel dashboard → your project → "Domains"
+- Add your own domain (e.g. yojanafind.in)
+- Buy .in domain for ₹600/year from GoDaddy or Namecheap
+
+---
+
+## STEP 4 — SET UP SUPABASE DATABASE (10 minutes, FREE)
+
+Why: So your schemes are stored in a real database, not just the local file.
+
+1. Go to supabase.com → sign up free
+2. Click "New Project" → name it "yojanafind" → choose Asia (Mumbai) region
+3. Wait 2 minutes for project to be created
+4. Click "SQL Editor" in left sidebar
+5. Paste and run this SQL:
 
 ```sql
--- Create schemes table
 CREATE TABLE schemes (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   name_hi TEXT,
   ministry TEXT,
-  icon TEXT,
+  icon TEXT DEFAULT '📋',
   icon_bg TEXT DEFAULT 'blue',
   description TEXT,
   description_hi TEXT,
@@ -134,7 +109,6 @@ CREATE TABLE schemes (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
--- Steps table
 CREATE TABLE scheme_steps (
   id SERIAL PRIMARY KEY,
   scheme_id INTEGER REFERENCES schemes(id) ON DELETE CASCADE,
@@ -143,194 +117,162 @@ CREATE TABLE scheme_steps (
   detail TEXT
 );
 
--- Documents table
 CREATE TABLE scheme_documents (
   id SERIAL PRIMARY KEY,
   scheme_id INTEGER REFERENCES schemes(id) ON DELETE CASCADE,
   document_name TEXT
 );
 
--- Suggestions table
 CREATE TABLE suggestions (
   id SERIAL PRIMARY KEY,
   suggestion TEXT,
   submitted_at TIMESTAMP DEFAULT NOW()
 );
 
--- Row Level Security
+-- Allow public read access
 ALTER TABLE schemes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scheme_steps ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scheme_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE suggestions ENABLE ROW LEVEL SECURITY;
 
--- Public read policies
-CREATE POLICY "Public read schemes" ON schemes FOR SELECT TO anon USING (true);
-CREATE POLICY "Public read steps" ON scheme_steps FOR SELECT TO anon USING (true);
-CREATE POLICY "Public read docs" ON scheme_documents FOR SELECT TO anon USING (true);
-CREATE POLICY "Public insert suggestions" ON suggestions FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "read_schemes" ON schemes FOR SELECT TO anon USING (true);
+CREATE POLICY "read_steps" ON scheme_steps FOR SELECT TO anon USING (true);
+CREATE POLICY "read_docs" ON scheme_documents FOR SELECT TO anon USING (true);
+CREATE POLICY "insert_suggestions" ON suggestions FOR INSERT TO anon WITH CHECK (true);
 ```
 
-### Step 3: Add Your Credentials
-Edit `supabase-config.js`:
+6. Go to Supabase → Settings → API
+7. Copy "Project URL" and "anon public" key
+8. Open supabase-config.js in your folder and replace:
 ```javascript
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJ...your-anon-key...';
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJ...your-key...';
 ```
-
-Get these from: **Supabase Dashboard → Settings → API**
-
-### Step 4: Populate Data
-The schemes data in `schemes-data.js` is your seed data. You can manually insert it via Supabase Table Editor or use the SQL insert statements (ask Claude to generate them from `schemes-data.js`).
-
----
-
-## ☁️ Vercel Deployment
-
-### Step 1: Push to GitHub
+9. Push to GitHub again:
 ```bash
-# Initialize git
-git init
-git add .
-git commit -m "Initial commit: YojanaFind - Indian Government Scheme Finder"
-
-# Create repo at github.com/new (name: yojanafind, public, no README)
-git remote add origin https://github.com/YOUR_USERNAME/yojanafind.git
-git branch -M main
-git push -u origin main
+git add supabase-config.js
+git commit -m "Add Supabase credentials"
+git push
 ```
+Vercel auto-deploys when you push.
 
-### Step 2: Deploy on Vercel
-1. Go to [vercel.com](https://vercel.com) → Sign up with GitHub
-2. Click **New Project** → Import `yojanafind` repo
-3. Framework Preset: **Other** (static site)
-4. Root Directory: `./` (leave as default)
-5. Click **Deploy** — live in ~60 seconds! 🎉
-
-### Step 3: Add Environment Variables (Optional)
-In Vercel Dashboard → Your Project → Settings → Environment Variables:
-```
-SUPABASE_URL = https://your-project.supabase.co
-SUPABASE_ANON_KEY = your-anon-key-here
-```
-
-*(Note: For a static site, these are in `supabase-config.js` directly. Env vars are useful for a Node.js backend.)*
+NOTE: The app works WITHOUT Supabase too — it uses schemes-data.js as fallback.
 
 ---
 
-## 📢 Google AdSense Setup
+## STEP 5 — HOW TO MAKE MONEY (AdSense)
 
-1. Apply at [google.com/adsense](https://google.com/adsense) using your Vercel domain
-2. Wait 1–14 days for approval
-3. Once approved, replace ad placeholders in `index.html`:
+### Option A: Google AdSense (Best for India)
 
+WHAT YOU EARN: ₹50 to ₹500 per 1000 visitors
+REALISTIC: If you get 10,000 visitors/month = ₹500 to ₹5,000/month
+At 100,000 visitors/month = ₹5,000 to ₹50,000/month
+
+HOW TO APPLY:
+1. Your site must be live on Vercel for at least 2-4 weeks
+2. Go to google.com/adsense
+3. Click "Get Started" → sign in with your Google account
+4. Enter your website URL (e.g. yojanafind.vercel.app)
+5. Submit for review
+6. Wait 7-14 days for approval email
+
+AFTER APPROVAL — ADD ADS TO YOUR SITE:
+
+Google gives you a code like this:
 ```html
-<!-- Find this (3 locations): -->
-<div class="ad-placeholder">📢 Advertisement · 728×90</div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+```
 
-<!-- Replace with your AdSense code: -->
+1. Open index.html in any text editor (Notepad, VS Code)
+2. Paste the script tag inside the <head> section
+3. Find these 3 lines (they say "Advertisement"):
+```html
+<div class="ad-box">Advertisement · 728×90</div>
+```
+4. Replace EACH one with your actual AdSense ad unit code:
+```html
 <ins class="adsbygoogle"
      style="display:block"
-     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-     data-ad-slot="XXXXXXXXXX"
+     data-ad-client="ca-pub-YOUR-ID-HERE"
+     data-ad-slot="YOUR-AD-SLOT-ID"
      data-ad-format="auto"
      data-full-width-responsive="true"></ins>
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 ```
+5. Save, push to GitHub, Vercel auto-deploys
 
-4. Add AdSense script in `<head>` of `index.html`:
-```html
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-```
+### Option B: Direct Sponsorship (More money)
+Once you have traffic, email government scheme consultants, NGOs, or CSC centers:
+"I have 50,000 visitors/month looking for government schemes. ₹5,000/month for a banner ad?"
 
----
-
-## 🤖 AI Tracker Setup (Firecrawl + Claude)
-
-The AI Tracker (`tracker.html`) simulates the crawling system. For a real backend:
-
-### Install dependencies
-```bash
-npm install @mendable/firecrawl-js @anthropic-ai/sdk @supabase/supabase-js node-cron
-```
-
-### Environment variables
-```bash
-FIRECRAWL_API_KEY=fc-your-key    # From firecrawl.dev (free tier available)
-ANTHROPIC_API_KEY=sk-ant-...     # From console.anthropic.com
-SUPABASE_URL=https://...
-SUPABASE_ANON_KEY=eyJ...
-```
-
-### Run the crawler
-```bash
-node crawler.js    # One-time run
-# Or set up cron: 0 2 */7 * * (every 7 days at 2 AM)
-```
-
-### Deploy backend on Render.com (free)
-1. Push crawler code to GitHub
-2. Go to [render.com](https://render.com) → New Web Service
-3. Connect repo → Build: `npm install` → Start: `node crawler.js`
-4. Add Cron Job: `0 2 */7 * *`
+### Option C: Affiliate/Referral
+- Suvidha Centers / Jan Seva Kendras pay ₹50-200 per referral for helping people apply
 
 ---
 
-## ➕ Adding More Schemes
+## STEP 6 — DEPLOY THE CRAWLER BACKEND (optional, for auto-updating schemes)
 
-### Option 1: Add to `schemes-data.js`
-Copy the schema of an existing scheme and add your new one to the `LOCAL_SCHEMES` array.
+The crawler automatically finds new schemes every 7 days.
 
-### Option 2: Add via Supabase Table Editor
-1. Go to Supabase Dashboard → Table Editor → `schemes`
-2. Click **Insert Row**
-3. Fill in all fields
-4. Add corresponding rows in `scheme_steps` and `scheme_documents`
+FREE hosting on Render.com:
+1. Create account at render.com
+2. Click "New" → "Web Service"
+3. Connect your GitHub yojanafind repo
+4. Settings:
+   - Build Command: npm install
+   - Start Command: node crawler.js
+5. Add Environment Variables:
+   - FIRECRAWL_API_KEY → get from firecrawl.dev (500 free credits/month)
+   - ANTHROPIC_API_KEY → get from console.anthropic.com
+   - SUPABASE_URL → from your Supabase dashboard
+   - SUPABASE_ANON_KEY → from your Supabase dashboard
+   - ADMIN_SECRET → type any random password
+6. Deploy
+7. In Render → "Cron Jobs" → Add: `0 2 */7 * *`
 
-### Option 3: Let AI Tracker discover it automatically
-The Firecrawl + Claude system will automatically find new schemes from official portals.
-
----
-
-## 🤝 Contributing
-
-1. Fork this repo
-2. Create feature branch: `git checkout -b feature/add-bihar-schemes`
-3. Commit changes: `git commit -m 'Add Bihar state specific schemes'`
-4. Push: `git push origin feature/add-bihar-schemes`
-5. Open a Pull Request
-
-### What we need:
-- 🗺️ State-specific scheme data (UP, Bihar, Maharashtra, etc.)
-- 🌐 Hindi translations for all scheme descriptions
-- 📱 Better mobile UX improvements
-- 🐛 Bug fixes and performance improvements
+COST: Free on Render free tier
+NOTE: Crawler runs automatically. You don't need to do anything.
 
 ---
 
-## 📄 License
+## WHAT WORKS RIGHT NOW (without any setup)
 
-MIT License — free for personal and commercial use.
+✅ landing.html — opens in browser immediately
+✅ index.html — filtering works with 18 built-in schemes
+✅ English ↔ Hindi toggle — works
+✅ Modal with application guide — works
+✅ Mobile responsive — works
+✅ No internet needed (offline fallback) — works
 
-```
-MIT License
-Copyright (c) 2026 YojanaFind
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
+## WHAT NEEDS SETUP
 
----
-
-## 🙏 Data Sources
-
-- [india.gov.in](https://india.gov.in) — Official Government of India portal
-- [myscheme.gov.in](https://myscheme.gov.in) — Official scheme discovery portal
-- [pib.gov.in](https://pib.gov.in) — Press Information Bureau
-- [socialjustice.gov.in](https://socialjustice.gov.in) — Social Justice Ministry
-- [nsap.nic.in](https://nsap.gov.in) — National Social Assistance Programme
-
-> ⚠️ **Disclaimer:** YojanaFind is an independent information platform. Always verify scheme details on official government websites before applying. Scheme eligibility and benefits may change.
+⚙️ Supabase — needs 10 min setup for live database
+⚙️ AdSense — needs 7-14 days for Google approval
+⚙️ Crawler backend — needs Render.com account + API keys
 
 ---
 
-*Built with ❤️ for every Indian by YojanaFind. Jai Hind! 🇮🇳*
+## COMMON QUESTIONS
+
+Q: Do I need to know coding?
+A: No. Just copy-paste files to GitHub and deploy on Vercel. No coding needed.
+
+Q: Is this really free?
+A: Yes. Vercel free tier = ₹0. Supabase free tier = ₹0. GitHub = ₹0.
+
+Q: How long to go live?
+A: 30 minutes from now if you follow the steps above.
+
+Q: How many schemes are there right now?
+A: 18 schemes pre-loaded in schemes-data.js. Add more manually in Supabase Table Editor or let the crawler find them automatically.
+
+Q: Can I add more schemes manually?
+A: Yes. Supabase → Table Editor → schemes → Insert Row.
+
+---
+
+## SUPPORT
+If something breaks, the most common fixes:
+1. White screen = check browser console (F12) for errors
+2. Schemes not showing = check supabase-config.js credentials
+3. Vercel deploy failed = check vercel.com → your project → "Deployments" for error logs
