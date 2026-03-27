@@ -5,8 +5,9 @@
 // Get them from: https://supabase.com → Your Project → Settings → API
 // ============================================================
 
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';         // e.g. https://xyzxyz.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // long string starting with eyJ...
+// Accessing variables from .env (Vite syntax)
+const SUPABASE_URL = import.meta.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
 
 // Initialize Supabase client (loaded via CDN in index.html)
 let supabase = null;
