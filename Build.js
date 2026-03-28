@@ -37,7 +37,7 @@ try {
 }
 `;
 
-fs.writeFileSync('supabase-config.js', content);
+writeFileSync('supabase-config.js', content);
 console.log('✅ supabase-config.js generated from environment variables');
 console.log('   SUPABASE_URL set:', SUPABASE_URL !== 'YOUR_SUPABASE_URL');
 console.log('   SUPABASE_ANON_KEY set:', SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY');
