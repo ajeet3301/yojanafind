@@ -5,7 +5,7 @@
   "description": "AI-powered government scheme crawler using Firecrawl + Claude",
   "main": "crawler.js",
   "scripts": {
-    "build": "node Build.js",
+    "build": "node build.js",
     "start": "node crawler.js",
     "dev": "node --watch crawler.js"
   },
