@@ -1,6 +1,7 @@
 {
   "name": "yojanafind-crawler",
   "version": "1.0.0",
+  "type": "module", 
   "description": "AI-powered government scheme crawler using Firecrawl + Claude",
   "main": "crawler.js",
   "scripts": {
