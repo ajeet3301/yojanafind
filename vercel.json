@@ -5,7 +5,8 @@
   "rewrites": [
     { "source": "/app", "destination": "/index.html" },
     { "source": "/tracker", "destination": "/tracker.html" },
-    { "source": "/api/crawl", "destination": "/crawler.js" }
+    { "source": "/api/crawl", "destination": "/crawler.js" },
+    { "source": "/(.*)", "destination": "/$1" }
   ],
   "crons": [
     {
