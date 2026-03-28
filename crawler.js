@@ -7,7 +7,7 @@
 import FirecrawlApp from '@mendable/firecrawl-js';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
-import cron from 'node-cron';
+
 import express from 'express';
 import cors from 'cors';
 
