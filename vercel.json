@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "node Build.js",
+  "buildCommand": "node build.js",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/app", "destination": "/index.html" },
