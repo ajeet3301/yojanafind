@@ -3,7 +3,7 @@
 // and writes them into supabase-config.js
 // You never need to put API keys in your code or GitHub
 
-import { writeFileSync } from 'fs';
+const { writeFileSync } = require('fs');
 
 const SUPABASE_URL     = process.env.SUPABASE_URL     || 'YOUR_SUPABASE_URL';
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
