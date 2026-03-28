@@ -1,10 +1,17 @@
 {
   "version": 2,
-  "buildCommand": "node build.js",
+  "buildCommand": "node Build.js",
   "outputDirectory": ".",
-  "routes": [
-    { "src": "/app",     "dest": "/index.html" },
-    { "src": "/tracker", "dest": "/tracker.html" },
-    { "src": "/(.*)",    "dest": "/$1" }
+  "rewrites": [
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/tracker", "destination": "/tracker.html" },
+    { "source": "/api/crawl", "destination": "/crawler.js" }
+  ],
+  "crons": [
+    {
+      "path": "/api/crawl",
+      "schedule": "0 2 */7 * *",
+      "description": "Trigger the AI crawler every 7 days"
+    }
   ]
 }
