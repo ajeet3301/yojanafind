@@ -1,4 +1,40 @@
-# YojanaFind — Complete Setup & Money Guide
+# YojanaFind 
+Find Government Schemes in Seconds
+
+YojanaFind helps Indian citizens discover government schemes they are eligible for based on age, income, category, gender, and personal circumstances. The platform supports both English and Hindi and provides application guidance, required documents, and eligibility information.
+
+Made for Indian Citizens 🇮🇳
+Helping people discover and access government benefits more easily.
+
+🚀 Features
+🔍 Smart Scheme Finder
+Filter schemes by:
+Age
+Income
+Category (General, OBC, SC, ST, EWS)
+Gender
+Special situations
+🌐 Bilingual Support
+English interface
+Hindi interface
+Instant language switching
+📋 Detailed Scheme Information
+Benefits
+Eligibility criteria
+Required documents
+Application steps
+Official government links
+📱 Mobile Friendly
+Responsive design
+Works on phones, tablets, and desktops
+💾 Offline Fallback
+Preloaded schemes available without database setup
+Works even if Supabase is not configured
+🤖 AI Scheme Tracker
+Monitor scheme updates
+Track newly added government schemes
+Intelligent categorization
+
 ## Everything step by step. No confusion.
 
 ---
